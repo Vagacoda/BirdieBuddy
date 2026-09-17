@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 
+// 2026/09/17 -17:43
 // 권한 테이블
 @Entity
 @Table(name = "role")
