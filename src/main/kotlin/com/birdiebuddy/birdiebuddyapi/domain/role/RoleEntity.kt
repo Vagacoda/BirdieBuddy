@@ -21,4 +21,7 @@ class RoleEntity(
     var name: String = ""
 )
 
-interface RoleRepository : JpaRepository<RoleEntity, Long>
+interface RoleRepository : JpaRepository<RoleEntity, Long>{
+    fun findByName(name: String): RoleEntity?
+    // Role테이블에서 권한 이름으로 한 행을 찾는 메서드임.
+}
