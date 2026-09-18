@@ -3,11 +3,9 @@ package com.birdiebuddy.birdiebuddyapi.config
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
-import org.springframework.security.config.web.server.ServerHttpSecurity
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.server.SecurityWebFilterChain
 
 // 2026/09/18 -15:37 SpringBoot에 비밀번호 해시 전용도구 등록하는 파일
 
