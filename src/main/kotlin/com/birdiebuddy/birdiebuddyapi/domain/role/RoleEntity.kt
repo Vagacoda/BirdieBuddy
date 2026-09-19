@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 // 2026/09/17 - 20:07 RoleEntity 생성
 @Entity
-@Table(name = "Role")
+@Table(name = "`Role`")
 class RoleEntity(
 
     @Id

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController // HTTP 요청을 받고 JSON 응답을 보내는 API 담당
-@RequestMapping("/api/user") // 컨트롤러의 기본 주소
+@RequestMapping("/api/users") // 컨트롤러의 기본 주소
 class SignupController (
     private val signupService: SignupService
 ){

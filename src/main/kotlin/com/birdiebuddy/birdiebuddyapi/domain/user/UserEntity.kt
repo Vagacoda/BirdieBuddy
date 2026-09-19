@@ -16,7 +16,7 @@ import java.time.LocalDateTime
 
 // 2026/09/17 - 20:12 UserEntity 생성
 @Entity
-@Table(name = "User")
+@Table(name = "`User`")
 class UserEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
