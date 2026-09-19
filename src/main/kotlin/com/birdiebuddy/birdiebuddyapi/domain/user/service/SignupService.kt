@@ -4,6 +4,7 @@ import com.birdiebuddy.birdiebuddyapi.domain.role.RoleRepository
 import com.birdiebuddy.birdiebuddyapi.domain.user.SignupRequest
 import com.birdiebuddy.birdiebuddyapi.domain.user.UserEntity
 import com.birdiebuddy.birdiebuddyapi.domain.user.UserRepository
+import com.birdiebuddy.birdiebuddyapi.domain.email.service.EmailTokenService
 import jakarta.transaction.Transactional
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -15,7 +16,8 @@ import org.springframework.stereotype.Service
 class SignupService (
     private val userRepository: UserRepository, // User테이블을 조회, 저장
     private val roleRepository: RoleRepository, // Role테이블에서 Member권한 찾음
-    private val passwordEncoder: PasswordEncoder // 입력된 비밀번호를 해시값으로 변경
+    private val passwordEncoder: PasswordEncoder, // 입력된 비밀번호를 해시값으로 변경
+    private val emailTokenService: EmailTokenService
 ){
     fun signup(request: SignupRequest): Long {
         // 컨트롤러가 받은 SignupRequest를 전달받아 회원가입을 수행, 완료된 회원의 ID를 반환
@@ -40,6 +42,13 @@ class SignupService (
             nickname = request.nickname,
             passwordHash = passwordHash
         )
-        return userRepository.save(user).id!!
+
+        val savedUser = userRepository.save(user)
+
+        val verificationCode = emailTokenService.createEmailVerification(savedUser)
+
+        println("개발용 이메일 인증번호: $verificationCode")
+
+        return savedUser.id!!
     }
 }
