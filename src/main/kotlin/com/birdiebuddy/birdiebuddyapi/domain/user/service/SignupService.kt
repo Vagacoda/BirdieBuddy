@@ -44,11 +44,14 @@ class SignupService (
         )
 
         val savedUser = userRepository.save(user)
+        // 저장된 회원객체 전체를 savedUser 에 저장
 
         val verificationCode = emailTokenService.createEmailVerification(savedUser)
+        // 저장된 회원 정보를 이메일 토큰 서비스에 전달
 
-        println("개발용 이메일 인증번호: $verificationCode")
+        println("이메일 인증번호: $verificationCode")
 
         return savedUser.id!!
+        // 회원가입 API 응답으로 새 회원의 ID를 보냄, 인증번호는 응답에 넣지 않음.
     }
 }
