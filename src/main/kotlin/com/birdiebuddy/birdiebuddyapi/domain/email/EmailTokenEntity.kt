@@ -52,6 +52,7 @@ class EmailTokenEntity (
     //인증번호 생성 시각
     )
 
+// 2026/09/20 - 14:00 인증번호 조회
 interface EmailTokenRepository : JpaRepository<EmailTokenEntity, Long> {
     fun findFirstByTargetEmailAndPurposeAndUsedAtIsNullOrderByCreatedAtDesc(
         // 함수 이름 자체가 조회조건, JPA가 함수 이름을 해석해 조회 SQL을 자동 생성
