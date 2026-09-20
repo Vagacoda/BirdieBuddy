@@ -25,6 +25,11 @@ class EmailVerificationController (
         emailVerificationService.confirm(request)
         return ResponseEntity.ok(
             mapOf("message" to "이메일 인증이 완료되었습니다.")
+            // mapOf : JSON 응답 본문을 만드는 코드
+            //{
+            //  "message": "이메일 인증이 완료되었습니다."
+            //}
+            // ResponseEntity.ok : ok가 HTTP 상태 코드 200 OK를 자동으로 설정.
             // HTTP200과 JSON을 보냄
         )
     }
