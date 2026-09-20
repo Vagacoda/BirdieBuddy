@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController // HTTP 요청 받고 JSON응답 보내는 API
-@RequestMapping("/auth/auth")
+@RequestMapping("/api/auth")
 class LoginController (
     private val loginService: LoginService
 ){
