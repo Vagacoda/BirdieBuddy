@@ -54,7 +54,7 @@ class EmailTokenEntity (
 
 interface EmailTokenRepository : JpaRepository<EmailTokenEntity, Long> {
     fun findFirstByTargetEmailAndPurposeAndUsedAtIsNullOrderByCreatedAtDesc(
-        // 함수 이름 자체가 조회조건(Spring Data JPA제공)
+        // 함수 이름 자체가 조회조건, JPA가 함수 이름을 해석해 조회 SQL을 자동 생성
         //findFirstBy
         //→ 조건에 맞는 행 중 하나를 찾음
         //TargetEmailAndPurposeAndUsedAtIsNull
