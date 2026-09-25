@@ -22,12 +22,15 @@ class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
+    // @Valid 검증 오류 처리
+    // SignupRequest, LoginRequest 등에 붙인 @NotBlank, @Email, @Pattern 검증이 실패시 발생
     fun handleValidationException(exception: MethodArgumentNotValidException):
             ResponseEntity<Map<String, String>> {
         val message = exception.bindingResult.fieldErrors
             .firstOrNull()
             ?.defaultMessage
             ?: "입력값이 올바르지 않습니다."
+            // 검증에 실패한 항목들 중 첫 번째 오류 메시지를 가져옴
         return ResponseEntity.badRequest().body(
             mapOf("message" to message)
         )
