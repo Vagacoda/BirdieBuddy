@@ -15,7 +15,9 @@ class GlobalExceptionHandler {
     fun handleIllegalArgumentException(exception: IllegalArgumentException)
     : ResponseEntity<Map<String, String>> {
         return ResponseEntity.badRequest().body(
-            mapof()
+            mapOf(
+                "message" to (exception.message ?: "잘못된 요청입니다.")
+            )
         )
     }
 }
