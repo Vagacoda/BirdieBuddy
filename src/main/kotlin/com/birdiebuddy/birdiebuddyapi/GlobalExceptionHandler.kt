@@ -25,9 +25,12 @@ class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleValidationException(exception: MethodArgumentNotValidException):
             ResponseEntity<Map<String, String>> {
-                val message = exception.bindingResult.fieldErrors
-                    .firstOrNull()
-                    ?.defaultMessage
-                    ?: "입력값이 올바르지 않습니다."
+        val message = exception.bindingResult.fieldErrors
+            .firstOrNull()
+            ?.defaultMessage
+            ?: "입력값이 올바르지 않습니다."
+        return ResponseEntity.badRequest().body(
+            mapOf("message" to message)
+        )
     }
 }
