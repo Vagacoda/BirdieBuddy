@@ -14,5 +14,8 @@ class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException::class)
     fun handleIllegalArgumentException(exception: IllegalArgumentException)
     : ResponseEntity<Map<String, String>> {
+        return ResponseEntity.badRequest().body(
+            mapof()
+        )
     }
 }
