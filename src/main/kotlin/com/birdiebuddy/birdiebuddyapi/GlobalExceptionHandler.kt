@@ -3,6 +3,7 @@ package com.birdiebuddy.birdiebuddyapi
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.ErrorResponse
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 
@@ -19,5 +20,11 @@ class GlobalExceptionHandler {
                 "message" to (exception.message ?: "잘못된 요청입니다.")
             )
         )
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException::class)
+    fun handleValidationException(exception: MethodArgumentNotValidException):
+            ResponseEntity<Map<String, String>> {
+
     }
 }
