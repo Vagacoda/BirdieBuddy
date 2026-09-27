@@ -35,10 +35,11 @@ class EmailTokenService(
         emailTokenRepository.save(emailToken)
         // 저장
 
+        emailService.sendVerificationCode(
+            to = user.email,
+            code = code
+        )
 
-
-        return code
-        // DB에 저장하지 않은 원문 인증번호를 반환
     }
     private fun generateCode(): String {
         val number = SecureRandom().nextInt(1_000_000)
