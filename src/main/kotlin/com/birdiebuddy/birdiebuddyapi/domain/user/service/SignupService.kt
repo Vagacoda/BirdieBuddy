@@ -13,20 +13,20 @@ import org.springframework.stereotype.Service
 
 @Service // 회원가입 관련 로직을 처리하는 Spring서비스라고 등록
 @Transactional // 트랜잭션, 중간에 오류나면 중간작업 취소.
-class SignupService (
+class SignupService(
     private val userRepository: UserRepository, // User테이블을 조회, 저장
     private val roleRepository: RoleRepository, // Role테이블에서 Member권한 찾음
     private val passwordEncoder: PasswordEncoder, // 입력된 비밀번호를 해시값으로 변경
     private val emailTokenService: EmailTokenService
-){
+) {
     fun signup(request: SignupRequest): Long {
         // 컨트롤러가 받은 SignupRequest를 전달받아 회원가입을 수행, 완료된 회원의 ID를 반환
 
-        if (userRepository.existsByEmail(request.email)){
+        if (userRepository.existsByEmail(request.email)) {
             throw IllegalArgumentException("이미 사용 중인 이메일입니다.")
         }
 
-        if (userRepository.existsByNickname(request.nickname)){
+        if (userRepository.existsByNickname(request.nickname)) {
             throw IllegalArgumentException("중복된 닉네임입니다.")
         }
 
@@ -44,9 +44,11 @@ class SignupService (
         )
 
         val savedUser = userRepository.save(user)
-        // 저장된 회원객체 전체를 savedUser 에 저장
+        // 저장된 회원 객체 전체를 savedUser에 저장
+
+        emailTokenService.createEmailVerification(savedUser)
+        // 인증번호 생성·해시값 DB 저장·실제 이메일 발송
 
         return savedUser.id!!
-        // 회원가입 API 응답으로 새 회원의 ID를 보냄, 인증번호는 응답에 넣지 않음.
     }
 }
