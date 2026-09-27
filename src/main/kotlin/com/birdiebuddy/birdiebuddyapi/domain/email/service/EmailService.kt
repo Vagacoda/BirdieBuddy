@@ -19,17 +19,18 @@ class EmailService(
         // to: 인증 메일을 받을 회원 이메일
         // code: 방금 생성한 6자리 인증번호 원문
         val message = SimpleMailMessage()
+        // 메일 한 통을 담을 빈 객체
 
-        message.setFrom(fromEmail)
-        message.setTo(to)
-        message.subject = "[BirideBuddy] 이메일 인증번호"
+        message.setFrom(fromEmail) // 발신자
+        message.setTo(to) // 수신자
+        message.subject = "[BirideBuddy] 이메일 인증번호" // 제목
         message.text = """
             BirdieBuddy 이베일 인증번호 입니다.
             
             인증번호 : $code
             
             인증번호는 5분후 만료됩니다.
-            """.trimIndent()
+            """.trimIndent() // 본문
 
         mailSender.send(message)
     }
