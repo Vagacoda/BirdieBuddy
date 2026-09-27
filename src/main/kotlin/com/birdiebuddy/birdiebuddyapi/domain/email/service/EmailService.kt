@@ -11,4 +11,8 @@ class EmailService(
 
     @Value("\${app.bailk.from}")
     private val fromEmail: String
-)
+) {
+    fun sendVerificationCode(to: String, code: String) {
+
+    }
+}
