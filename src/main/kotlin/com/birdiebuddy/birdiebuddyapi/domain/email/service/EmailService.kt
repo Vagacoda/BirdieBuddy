@@ -13,6 +13,19 @@ class EmailService(
     private val fromEmail: String
 ) {
     fun sendVerificationCode(to: String, code: String) {
+        val message = SimpleMailMessage()
 
+        message.setFrom(fromEmail)
+        message.setTo(to)
+        message.subject = "[BirideBuddy] 이메일 인증번호"
+        message.text = """
+            BirdieBuddy 이베일 인증번호 입니다.
+            
+            인증번호 : $code
+            
+            인증번호는 5분후 만료됩니다.
+            """.trimIndent()
+
+        mailSender.send(message)
     }
 }
