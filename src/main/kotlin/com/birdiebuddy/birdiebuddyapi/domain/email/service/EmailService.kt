@@ -6,4 +6,9 @@ import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.stereotype.Service
 
 @Service
-class EmailService ()
+class EmailService(
+    private val mailSender: JavaMailSender,
+
+    @Value("\${app.bailk.from}")
+    private val fromEmail: String
+)
