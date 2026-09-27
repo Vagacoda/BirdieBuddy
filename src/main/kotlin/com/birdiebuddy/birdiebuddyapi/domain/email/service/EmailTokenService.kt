@@ -13,7 +13,8 @@ import java.time.LocalDateTime
 @Transactional
 class EmailTokenService(
     private val emailTokenRepository: EmailTokenRepository,
-    private val passwordEncoder: PasswordEncoder
+    private val passwordEncoder: PasswordEncoder,
+    private val emailService: EmailService
 ) {
     fun createEmailVerification(user:UserEntity): String {
         // 회원 객체 하나를 받아 이메일 인증용 토큰을 만들고, 발송할 6자리 인증번호 원문을 반환
@@ -33,6 +34,8 @@ class EmailTokenService(
 
         emailTokenRepository.save(emailToken)
         // 저장
+
+
 
         return code
         // DB에 저장하지 않은 원문 인증번호를 반환
