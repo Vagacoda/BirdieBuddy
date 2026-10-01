@@ -23,7 +23,7 @@ class EmailTokenEntity (
     // EmailToken의 id
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     var user: UserEntity?= null,
     // 인증번호가 한 회원에게 여러번 갈수있으므로 다대일임
 

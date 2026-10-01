@@ -14,7 +14,7 @@ import java.time.LocalDateTime
 class EmailTokenService(
     private val emailTokenRepository: EmailTokenRepository,
     private val passwordEncoder: PasswordEncoder,
-    private val emailService: EmailService
+    private val emailService: EmailService // Spring Boot가 EmailService 객체를 주입, 이메일 발송 서비스도 사용
 ) {
     fun createEmailVerification(user:UserEntity){
         // 회원 객체 하나를 받아 이메일 인증용 토큰을 만들고, 발송할 6자리 인증번호 원문을 반환
@@ -33,12 +33,13 @@ class EmailTokenService(
         )
 
         emailTokenRepository.save(emailToken)
-        // 저장
+        // 인증번호의 해시값, 수신 이메일, 만료 시각을 EmailToken 테이블에 저장
 
         emailService.sendVerificationCode(
             to = user.email,
             code = code
         )
+        // SES를 통해 회원 이메일로 발송
 
     }
     private fun generateCode(): String {
