@@ -32,6 +32,16 @@ class EmailTokenEntity (
     //→ UserEntity 존재
     //→ EmailToken.user_id에 회원 ID 저장
     // 따라서 user_id가 반드시 있어야함
+    // @JoinColumn(name = "user_id", nullable = false)
+    // var user: UserEntity? = null
+
+    // 하지만 인증번호 보내고 인증번호확인하고 그 뒤 User생성 방식으로 변경하였음
+    // 이메일 입력
+    // → 인증번호 발송
+    // → 인증번호 확인
+    // → 그 뒤 User 생성
+    // nullable = false는 id가 null일수 있다고 알려주기위함임.
+
     @Column(name = "target_email", nullable = false, length = 254)
     var targetEmail: String = "",
     // 인증번호를 보낼 이메일 주소
