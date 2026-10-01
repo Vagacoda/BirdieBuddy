@@ -53,4 +53,8 @@ class SignupService(
 
         return savedUser.id!!
     }
+    // 2026/10/01 - 21:34 추가
+    fun isEmailAvailable(email: String): Boolean {
+        return !userRepository.existsByEmail(email)
+    }
 }
