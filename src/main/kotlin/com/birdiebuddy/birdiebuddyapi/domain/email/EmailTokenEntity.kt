@@ -26,7 +26,12 @@ class EmailTokenEntity (
     @JoinColumn(name = "user_id")
     var user: UserEntity?= null,
     // 인증번호가 한 회원에게 여러번 갈수있으므로 다대일임
-
+    // 2026/10/01 - 21:04
+    // 기존에는 인증번호를 만들기 전에 회원을 먼저 저장
+    // User 생성
+    //→ UserEntity 존재
+    //→ EmailToken.user_id에 회원 ID 저장
+    // 따라서 user_id가 반드시 있어야함
     @Column(name = "target_email", nullable = false, length = 254)
     var targetEmail: String = "",
     // 인증번호를 보낼 이메일 주소
