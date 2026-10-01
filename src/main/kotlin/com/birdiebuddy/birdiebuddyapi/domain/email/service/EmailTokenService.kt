@@ -2,7 +2,7 @@ package com.birdiebuddy.birdiebuddyapi.domain.email.service
 
 import com.birdiebuddy.birdiebuddyapi.domain.email.EmailTokenEntity
 import com.birdiebuddy.birdiebuddyapi.domain.email.EmailTokenRepository
-import com.birdiebuddy.birdiebuddyapi.domain.user.UserEntity
+// import com.birdiebuddy.birdiebuddyapi.domain.user.UserEntity
 import jakarta.transaction.Transactional
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -16,7 +16,7 @@ class EmailTokenService(
     private val passwordEncoder: PasswordEncoder,
     private val emailService: EmailService // Spring Boot가 EmailService 객체를 주입, 이메일 발송 서비스도 사용
 ) {
-    fun createEmailVerification(user:UserEntity){
+    fun createEmailVerification(email: String){
         // 회원 객체 하나를 받아 이메일 인증용 토큰을 만들고, 발송할 6자리 인증번호 원문을 반환
         val code = generateCode()
         // 000000부터 999999까지의 6자리 인증번호를 생성
@@ -26,17 +26,17 @@ class EmailTokenService(
         // 인증번호 원문을 BCrypt 해시값으로 변환
 
         val emailToken = EmailTokenEntity(
-            user = user, // 어느 회원의 인증번호인지 연결
-            targetEmail = user.email, // 인증번호 보낼 이메일
-            tokenHash = tokenHash, // 해시처리된 인증번호
-            expiresAt = LocalDateTime.now().plusMinutes(5) // 5분뒤 만료
+            user = null,
+            targetEmail = email,
+            tokenHash = tokenHash,
+            expiresAt = LocalDateTime.now().plusMinutes(5)
         )
 
         emailTokenRepository.save(emailToken)
         // 인증번호의 해시값, 수신 이메일, 만료 시각을 EmailToken 테이블에 저장
 
         emailService.sendVerificationCode(
-            to = user.email,
+            to = email,
             code = code
         )
         // SES를 통해 회원 이메일로 발송
