@@ -4,7 +4,7 @@ import com.birdiebuddy.birdiebuddyapi.domain.role.RoleRepository
 import com.birdiebuddy.birdiebuddyapi.domain.user.SignupRequest
 import com.birdiebuddy.birdiebuddyapi.domain.user.UserEntity
 import com.birdiebuddy.birdiebuddyapi.domain.user.UserRepository
-import com.birdiebuddy.birdiebuddyapi.domain.email.service.EmailTokenService
+// import com.birdiebuddy.birdiebuddyapi.domain.email.service.EmailTokenService 21:29 주석처리
 import jakarta.transaction.Transactional
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -17,7 +17,7 @@ class SignupService(
     private val userRepository: UserRepository, // User테이블을 조회, 저장
     private val roleRepository: RoleRepository, // Role테이블에서 Member권한 찾음
     private val passwordEncoder: PasswordEncoder, // 입력된 비밀번호를 해시값으로 변경
-    private val emailTokenService: EmailTokenService
+    // private val emailTokenService: EmailTokenService 2026/10/01 - 21:29 주석처리
 ) {
     fun signup(request: SignupRequest): Long {
         // 컨트롤러가 받은 SignupRequest를 전달받아 회원가입을 수행, 완료된 회원의 ID를 반환
@@ -46,8 +46,10 @@ class SignupService(
         val savedUser = userRepository.save(user)
         // 저장된 회원 객체 전체를 savedUser에 저장
 
-        emailTokenService.createEmailVerification(savedUser)
+        //emailTokenService.createEmailVerification(savedUser)
         // 인증번호 생성·해시값 DB 저장·실제 이메일 발송
+        // 2026/10/01 - 21:28
+        // 이제 emailTokenService.createEmailVerification(savedUser)는 인증절차 변경으로 인해 주석처리하였음
 
         return savedUser.id!!
     }
