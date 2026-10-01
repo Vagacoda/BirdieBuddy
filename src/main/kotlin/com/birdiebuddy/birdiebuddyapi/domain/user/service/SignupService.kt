@@ -54,6 +54,8 @@ class SignupService(
         return savedUser.id!!
     }
     // 2026/10/01 - 21:34 추가
+    // 입력한 이메일을 회원가입에 써도 되는지를 true 또는 false로 알려주는 함수
+    // 다만 함수앞에 !가 붙었기 때문에 이메일이 중복이면 false, 없으면 true를 반환함.
     fun isEmailAvailable(email: String): Boolean {
         return !userRepository.existsByEmail(email)
     }
