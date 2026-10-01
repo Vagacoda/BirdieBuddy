@@ -41,6 +41,7 @@ class EmailTokenEntity (
     // → 인증번호 확인
     // → 그 뒤 User 생성
     // nullable = false는 id가 null일수 있다고 알려주기위함임.
+    // 즉, 회원가입 하기 전까지는 해당 email을 가진 user는 null인 상태이기 때문에 user정보는 null일수있다고 알리는  것임
 
     @Column(name = "target_email", nullable = false, length = 254)
     var targetEmail: String = "",
