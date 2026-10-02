@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+// 2026/10/02 - 13:56
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestParam
 
 @RestController // HTTP 요청을 받고 JSON 응답을 보내는 API 담당
 @RequestMapping("/api/users") // 컨트롤러의 기본 주소
@@ -25,6 +28,29 @@ class SignupController (
             mapOf(
                 "id" to userId,
                 "message" to "회원가입이 완료되었습니다"
+            )
+        )
+    }
+
+    // 2026/10/02 - 14:01
+    @GetMapping("/email-availablility")
+    // GET /api/users/email-availability
+    fun checkEmailAvailability(
+        @RequestParam("email") email: String
+    ): ResponseEntity<Map<String, Any>> {
+        val available = signupService.isEmailAvailable(email)
+
+        val message = if (available) {
+            "사용 가능한 이메일입니다."
+        } else {
+            "이미 사용 중인 이메일입니다."
+        }
+
+        return ResponseEntity.ok(
+            mapOf(
+                "email" to email,
+                "available" to available,
+                "message" to message
             )
         )
     }
