@@ -70,6 +70,7 @@ class EmailTokenEntity (
 
 // 2026/09/20 - 14:00 인증번호 조회
 interface EmailTokenRepository : JpaRepository<EmailTokenEntity, Long> {
+    // 발송은 됐지만 아직 인증번호 입력에 성공하지 않은 토큰
     fun findFirstByTargetEmailAndPurposeAndUsedAtIsNullOrderByCreatedAtDesc(
         // 함수 이름 자체가 조회조건, JPA가 함수 이름을 해석해 조회 SQL을 자동 생성
         //findFirstBy
@@ -84,6 +85,9 @@ interface EmailTokenRepository : JpaRepository<EmailTokenEntity, Long> {
         targetEmail: String,
         purpose: String
     ): EmailTokenEntity?
+
+    // 2026/10/02 - 16:05
+    // 인증번호 입력에 성공한 토큰
     fun findFirstByTargetEmailAndPurposeAndUsedAtIsNotNullOrderByUsedAtDesc(
         // 함수 이름 자체가 조회 조건이며, JPA가 함수 이름을 해석해 조회 SQL을 자동 생성
 
@@ -102,7 +106,6 @@ interface EmailTokenRepository : JpaRepository<EmailTokenEntity, Long> {
 
         targetEmail: String,
         // → 회원가입하려는 이메일 주소
-
         purpose: String
         // → 현재는 "EMAIL_VERIFY" 값을 전달해 이메일 인증 토큰만 찾음
 
