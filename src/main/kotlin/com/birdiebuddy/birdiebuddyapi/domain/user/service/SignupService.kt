@@ -8,6 +8,8 @@ import com.birdiebuddy.birdiebuddyapi.domain.user.UserRepository
 import jakarta.transaction.Transactional
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+// 2026/10/02 - 16:09
+import com.birdiebuddy.birdiebuddyapi.domain.email.EmailTokenRepository
 
 // 2026/09/18 - 회원가입 요청을 받아서 검증한 뒤, 비밀번호를 해시 처리하고 User 테이블에 저장
 
@@ -17,6 +19,7 @@ class SignupService(
     private val userRepository: UserRepository, // User테이블을 조회, 저장
     private val roleRepository: RoleRepository, // Role테이블에서 Member권한 찾음
     private val passwordEncoder: PasswordEncoder, // 입력된 비밀번호를 해시값으로 변경
+    private val emailTokenRepository: EmailTokenRepository // 2026/10/02 추가
     // private val emailTokenService: EmailTokenService 2026/10/01 - 21:29 주석처리
 ) {
     fun signup(request: SignupRequest): Long {
@@ -36,11 +39,20 @@ class SignupService(
         val passwordHash = passwordEncoder.encode(request.password)
             ?: throw IllegalStateException("비밀번호 해시 생성에 실패했습니다.")
 
+        // 2026/10/02 - 16:11
+        val verifiedEmailToken = emailTokenRepository
+            .findFirstByTargetEmailAndPurposeAndUsedAtIsNotNullOrderByUsedAtDesc(
+                targetEmail = request.email,
+                purpose = "EMAIL_VERIFY"
+            )
+            ?: throw IllegalArgumentException("이메일 인증이 필요합니다.")
+
         val user = UserEntity(
             role = memberRole,
             email = request.email,
             nickname = request.nickname,
-            passwordHash = passwordHash
+            passwordHash = passwordHash,
+            emailVerifiedAt = verifiedEmailToken.usedAt
         )
 
         val savedUser = userRepository.save(user)
