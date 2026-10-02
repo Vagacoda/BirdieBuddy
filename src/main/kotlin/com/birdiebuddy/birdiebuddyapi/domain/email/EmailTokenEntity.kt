@@ -84,4 +84,29 @@ interface EmailTokenRepository : JpaRepository<EmailTokenEntity, Long> {
         targetEmail: String,
         purpose: String
     ): EmailTokenEntity?
+    fun findFirstByTargetEmailAndPurposeAndUsedAtIsNotNullOrderByUsedAtDesc(
+        // 함수 이름 자체가 조회 조건이며, JPA가 함수 이름을 해석해 조회 SQL을 자동 생성
+
+        // findFirstBy
+        // → 조건에 맞는 행 중 한 건을 찾음
+
+        // TargetEmailAndPurposeAndUsedAtIsNotNull
+        // → 입력한 이메일이 같고
+        // → 용도가 EMAIL_VERIFY이며
+        // → 인증번호를 이미 사용한 used_at 값이 NULL이 아닌 행
+        // → 즉, 인증번호 입력까지 성공한 토큰
+
+        // OrderByUsedAtDesc
+        // → 인증 완료 시각 used_at을 최신순으로 정렬
+        // → 가장 최근에 이메일 인증을 완료한 토큰 한 건을 선택
+
+        targetEmail: String,
+        // → 회원가입하려는 이메일 주소
+
+        purpose: String
+        // → 현재는 "EMAIL_VERIFY" 값을 전달해 이메일 인증 토큰만 찾음
+
+    ): EmailTokenEntity?
+    // → 조건에 맞는 인증 완료 토큰이 있으면 EmailTokenEntity 반환
+    // → 없다면 null 반환
 }
