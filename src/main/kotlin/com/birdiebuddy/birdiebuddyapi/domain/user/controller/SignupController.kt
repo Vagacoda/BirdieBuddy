@@ -33,7 +33,7 @@ class SignupController (
     }
 
     // 2026/10/02 - 14:01
-    @GetMapping("/email-availablility")
+    @GetMapping("/email-availability")
     // GET /api/users/email-availability
     fun checkEmailAvailability( // 이메일 중복 확인 요청 처리 함수
         @RequestParam("email") email: String
