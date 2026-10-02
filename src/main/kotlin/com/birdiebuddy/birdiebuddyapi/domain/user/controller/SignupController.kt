@@ -39,11 +39,16 @@ class SignupController (
         @RequestParam("email") email: String
     ): ResponseEntity<Map<String, Any>> {
         val available = signupService.isEmailAvailable(email)
+        // Controller는 직접 DB를 조회X SignupService가 !userRepository.existsByEmail(email)함
+        // 이메일이 없음 → available = true
+        // 이메일이 있음 → available = false
 
         val message = if (available) {
             "사용 가능한 이메일입니다."
+            //available가 true  → 사용 가능한 이메일입니다.
         } else {
             "이미 사용 중인 이메일입니다."
+            // available가 false → 이미 사용 중인 이메일입니다.
         }
 
         return ResponseEntity.ok(
@@ -52,6 +57,12 @@ class SignupController (
                 "available" to available,
                 "message" to message
             )
+            // {
+            //  "email": "user@example.com",
+            //  "available": true,
+            //  "message": "사용 가능한 이메일입니다."
+            //}
+            // 과 같은 Json형태로 반환함
         )
     }
 }
