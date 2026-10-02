@@ -38,13 +38,17 @@ class EmailVerificationService (
         if (!passwordEncoder.matches(request.code, emailToken.tokenHash)){
             throw IllegalArgumentException("인증번호가 일치하지 않습니다.")
         }
+        // ------------------------------------------------------------------------------------------------
+        // 2026/10/02 - 15:36 주석처리
         // 사용자 입력 인증번호와 DB 해시값이 같은 원문에서 나온 것인지 확인. 다르면 인증 실패 출력
-        val user = emailToken.user
-            ?: throw IllegalArgumentException("인증번호와 연결된 회원이 없습니다.")
+        //val user = emailToken.user
+        //    ?: throw IllegalArgumentException("인증번호와 연결된 회원이 없습니다.")
         // 인증번호와 연결된 회원을 가져옴
+        // ------------------------------------------------------------------------------------------------
         emailToken.usedAt = now
         // 인증번호는 사용 완료 상태이며 같은번호로 다시 인증 불가함
-        user.emailVerifiedAt = now
+        // 2026/10/02 - 15:37 주석처리
+        //user.emailVerifiedAt = now
         // 회원의 이메일 인증 완료 시각을 기록함
     }
     //2026/10/02 - 14:48
