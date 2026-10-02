@@ -17,7 +17,7 @@ class SecurityConfig { // 보안 설정 클래스
         return BCryptPasswordEncoder() // Bcrypt 방식 비밀번호 처리도구를 새로 만들어 반환
     }
 
-    // 어떤 APU에 누가 접근할 수 있는지 정하는 보안 규칙
+    // 어떤 API에 누가 접근할 수 있는지 정하는 보안 규칙
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         // SpringSecurity에 접근규칙 생성, SpringBoot에 등록. HttpSecurity를 http변수명으로 사용
@@ -28,6 +28,7 @@ class SecurityConfig { // 보안 설정 클래스
             .authorizeHttpRequests { auth -> // 주소별 접근 권한 설정이며, API 접근 권한을 정함
                 auth.requestMatchers(
                     "/api/users",
+                    "/api/users/email-availability",
                     "/api/auth/email-verifications/confirm",
                     "/api/auth/login").permitAll()
                 // /api/users(회원가입 API주소) 는 비회원도 접근 가능.
