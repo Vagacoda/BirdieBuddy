@@ -38,13 +38,22 @@ class EmailVerificationController (
     @PostMapping("/send")
     fun sendVerificationCode(
         @Valid @RequestBody request: EmailVerificationSendRequest
+        // JSON을 EmailVerificationSendRequest 객체로 받음
+        // @RequestBody: JSON 본문을 Kotlin 객체로 변환
+        // @Valid: 이메일이 비었는지, 형식이 맞는지 검사
+        // 검사 실패 시 400 응답
     ): ResponseEntity<Map<String, String>> {
+        // HTTP 상태 코드(ok이므로 200반환)
+        // JSON 본문이 “문자열 이름 : 문자열 값” 형태
         emailVerificationService.sendSignupVerification(request.email)
+        // 요청에서 받은 이메일만 꺼내 서비스에 넘김
+        // 서비스가 중복 이메일인지 다시 확인, 통과하면 인증번호 생성·DB 저장·SES 발송을 처리
 
         return ResponseEntity.ok(
             mapOf(
                 "message" to "인증번호를 이메일로 발송했습니다."
             )
         )
+        // 발송이 성공했을 때 HTTP 200과 JSON반환
     }
 }

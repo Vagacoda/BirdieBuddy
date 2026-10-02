@@ -30,6 +30,7 @@ class SecurityConfig { // 보안 설정 클래스
                     "/api/users",
                     "/api/users/email-availability",
                     "/api/auth/email-verifications/confirm",
+                    "/api/auth/email-verifications/send",
                     "/api/auth/login").permitAll()
                 // /api/users(회원가입 API주소) 는 비회원도 접근 가능.
                 auth.anyRequest().authenticated()
