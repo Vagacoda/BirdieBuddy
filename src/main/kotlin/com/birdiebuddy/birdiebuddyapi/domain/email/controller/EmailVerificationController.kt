@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+// 2026/10/02 - 15:09\
+import com.birdiebuddy.birdiebuddyapi.domain.email.EmailVerificationSendRequest
 
 @RestController // HTTP요청 받고 JSON응답 보내는 API
 @RequestMapping("/api/auth/email-verifications")
@@ -31,6 +33,18 @@ class EmailVerificationController (
             //}
             // ResponseEntity.ok : ok가 HTTP 상태 코드 200 OK를 자동으로 설정.
             // HTTP200과 JSON을 보냄
+        )
+    }
+    @PostMapping("/send")
+    fun sendVerificationCode(
+        @Valid @RequestBody request: EmailVerificationSendRequest
+    ): ResponseEntity<Map<String, String>> {
+        emailVerificationService.sendSignupVerification(request.email)
+
+        return ResponseEntity.ok(
+            mapOf(
+                "message" to "인증번호를 이메일로 발송했습니다."
+            )
         )
     }
 }
