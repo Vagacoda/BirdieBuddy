@@ -6,13 +6,19 @@ import jakarta.transaction.Transactional
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
+// 2026/10/02 - 14:36
+import com.birdiebuddy.birdiebuddyapi.domain.email.service.EmailTokenService
+import com.birdiebuddy.birdiebuddyapi.domain.user.UserRepository
 
 // 2026/09/20 - 15:12 인증번호가 유효한지 확인하고, 성공하면 인증 완료 상태로 바꾸는 클래스
 @Service
 @Transactional
 class EmailVerificationService (
     private val emailTokenRepository: EmailTokenRepository,
-    private val passwordEncoder: PasswordEncoder
+    private val passwordEncoder: PasswordEncoder,
+    // 2026/10/02 - 14:48
+    private val userRepository: UserRepository,
+    private val emailTokenService: EmailTokenService
 ){
     fun confirm(request : EmailVerificationConfirmRequest){
         val emailToken = emailTokenRepository
@@ -40,5 +46,20 @@ class EmailVerificationService (
         // 인증번호는 사용 완료 상태이며 같은번호로 다시 인증 불가함
         user.emailVerifiedAt = now
         // 회원의 이메일 인증 완료 시각을 기록함
+    }
+    //2026/10/02 - 14:48
+    fun sendSignupVerification(email: String) {
+        // 매개변수 email은 발송할 이메일 주소
+        // 컨트롤러가 받은 "test@example.com" 같은 값을 전달
+        if (userRepository.existsByEmail(email)) {
+            // User 테이블에서 전달받은 이메일이 이미 있는지 확인
+            // 있으면 true, 없으면 false를 반환
+            throw IllegalArgumentException("이미 사용 중인 이메일입니다.")
+            // 이메일이 이미 있으면 함수 종료
+        }
+
+        emailTokenService.createEmailVerification(email)
+        // 이메일이 없어서 if를 통과한 경우에만 실행
+        // EmailTokenService에 이메일 주소를 넘김
     }
 }
