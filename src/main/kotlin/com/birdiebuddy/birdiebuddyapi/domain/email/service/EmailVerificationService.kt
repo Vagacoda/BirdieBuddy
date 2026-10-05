@@ -17,8 +17,8 @@ class EmailVerificationService (
     private val emailTokenRepository: EmailTokenRepository,
     private val passwordEncoder: PasswordEncoder,
     // 2026/10/02 - 14:48
-    private val userRepository: UserRepository,
-    private val emailTokenService: EmailTokenService
+    private val userRepository: UserRepository, // 이메일 중복을 확인
+    private val emailTokenService: EmailTokenService // 인증번호를 발송
 ){
     fun confirm(request : EmailVerificationConfirmRequest){
         val emailToken = emailTokenRepository
