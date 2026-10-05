@@ -52,7 +52,13 @@ class EmailVerificationService (
         // → emailToken.user로 User 조회
         // → user.emailVerifiedAt 기록
         // 현재(10/02 이후)
-
+        // 인증번호 발송
+        // → 아직 User 없음
+        // → EmailToken.user = null
+        // → 인증번호 확인
+        // → EmailToken.usedAt 기록
+        // → 나중에 회원가입
+        // → User 생성하면서 emailVerifiedAt 기록
         // ------------------------------------------------------------------------------------------------
         emailToken.usedAt = now
         // 인증번호는 사용 완료 상태이며 같은번호로 다시 인증 불가함
