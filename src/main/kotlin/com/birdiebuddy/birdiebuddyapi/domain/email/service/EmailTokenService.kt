@@ -16,7 +16,8 @@ class EmailTokenService(
     private val passwordEncoder: PasswordEncoder,
     private val emailService: EmailService // Spring Boot가 EmailService 객체를 주입, 이메일 발송 서비스도 사용
 ) {
-    fun createEmailVerification(email: String){ // 회원가입 전에는 User가 없으므로 이메일 문자열만 받음
+    fun createEmailVerification(email: String){
+        // 회원가입 전에는 User가 없으므로 이메일 문자열만 받음
         // 회원 객체 하나를 받아 이메일 인증용 토큰을 만들고, 발송할 6자리 인증번호 원문을 반환
         val code = generateCode()
         // 000000부터 999999까지의 6자리 인증번호를 생성
