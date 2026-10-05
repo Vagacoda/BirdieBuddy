@@ -44,6 +44,7 @@ class EmailVerificationService (
         //val user = emailToken.user
         //    ?: throw IllegalArgumentException("인증번호와 연결된 회원이 없습니다.")
         // 인증번호와 연결된 회원을 가져옴
+        //
         // 기존(10/02 이전)
         // 회원가입
         // → User 먼저 생성
@@ -51,6 +52,7 @@ class EmailVerificationService (
         // → 인증번호 확인
         // → emailToken.user로 User 조회
         // → user.emailVerifiedAt 기록
+        //
         // 현재(10/02 이후)
         // 인증번호 발송
         // → 아직 User 없음
