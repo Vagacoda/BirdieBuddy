@@ -14,6 +14,7 @@ import javax.crypto.SecretKey
 class JwtService(
     @Value("\${app.jwt.secret}")
     private val secret: String,
+    // application.yml의 값을 읽어옴
 
     @Value("\${app.jwt.access-token-expiration-ms}")
     private val accessTokenExpirationMs: Long
