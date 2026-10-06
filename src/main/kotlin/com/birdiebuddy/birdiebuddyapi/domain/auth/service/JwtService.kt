@@ -56,7 +56,12 @@ class JwtService(
 
     }
     fun getUserId(token: String): Long {
+        // token으로 JWT문자열을 받음
+        // 회원 ID 숫자를 Long으로 반환
         return Jwts.parser()
+            // WT를 읽고 검증할 도구를 만들기 시작
+            // 토큰을 만들 때는 Jwts.builder()
+            // 토큰을 읽을 때는 Jwts.parser()
             .verifyWith(signingKey)
             .build()
             .parseSignedClaims(token)
