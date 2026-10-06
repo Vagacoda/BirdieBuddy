@@ -36,13 +36,21 @@ class JwtService(
     fun createAccessToken(userId: Long): String {
         // 회원 ID를 받아 JWT 문자열을 만들어 반환하는 함수
         val now = Date()
+        // 토큰 발급 시각을 현재 시간으로 저장
         val expiration = Date(now.time + accessTokenExpirationMs)
+        // 현재 시간에 1시간을 더해 토큰 만료 시각을 만듦
 
         return Jwts.builder()
+            // JWT를 만듦
             .subject(userId.toString())
+            // JWT의 subject 칸에 회원 ID를 넣음
             .issuedAt(now)
+            // 토큰 발급 시각을 기록
             .expiration(expiration)
+            // 토큰 만료 시각을 기록
             .signWith(signingKey)
+            // 서버 비밀키로 JWT에 서명
             .compact()
+            // 설정한 정보를 실제 JWT 문자열로 완성
     }
 }
