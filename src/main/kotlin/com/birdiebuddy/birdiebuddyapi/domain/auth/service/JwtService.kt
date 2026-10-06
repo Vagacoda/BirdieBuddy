@@ -25,7 +25,8 @@ class JwtService(
     // app:
     //  jwt:
     //    access-token-expiration-ms: 3600000
-    //  Long은 큰 정수를 담는 타입, 여기서는 밀리초
+    // Long은 큰 정수를 담는 타입, 여기서는 밀리초
+    // Why? Java의 Date와 now.time이 시간을 밀리초로 다루기 때문
 ) {
     private val signingKey: SecretKey =
         Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret))
