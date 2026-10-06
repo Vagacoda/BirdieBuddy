@@ -56,6 +56,7 @@ class JwtService(
 
     }
     fun getUserId(token: String): Long {
+        // 회원 ID를 다시 꺼내는 함수
         // token으로 JWT문자열을 받음
         // 회원 ID 숫자를 Long으로 반환
         return Jwts.parser()
@@ -63,10 +64,25 @@ class JwtService(
             // 토큰을 만들 때는 Jwts.builder()
             // 토큰을 읽을 때는 Jwts.parser()
             .verifyWith(signingKey)
+            // 토큰을 만들 때 사용한 서버 비밀키를 넣음
             .build()
+            // 설정을 끝내고 실제 JWT 해석기를 만듦
             .parseSignedClaims(token)
+            // 전달받은 JWT 문자열을 실제로 읽으며 다음과 같이 확인
+            // 토큰 형식이 정상인가?
+            // 서명이 signingKey와 일치하는가?
+            // 만료 시간이 지나지 않았는가?
             .payload
+            // JWT 안의 내용 부분을 가져옴(회원 ID, 발급 시각, 만료 시각 등)
             .subject
+            // JWT 내용 중 subject 값을 가져옴(토큰 생성 때 아래 코드로 넣었던 회원 ID)
             .toLong()
+            // subject는 문자열이므로, 다시 회원 ID 숫자 타입인 Long으로 바꿈
+            // 전체 흐름은 다음과 같음
+            // JWT 문자열 수신
+            // → 서버 비밀키로 서명·만료 시간 검증
+            // → JWT 내용에서 subject 추출
+            // → 문자열 "5"를 숫자 5로 변환
+            // → 회원 ID 반환
     }
 }
