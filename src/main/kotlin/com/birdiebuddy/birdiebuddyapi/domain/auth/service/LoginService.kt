@@ -10,9 +10,11 @@ import org.springframework.stereotype.Service
 @Transactional
 class LoginService (
     private val userRepository: UserRepository,
-    private val passwordEncoder: PasswordEncoder
+    private val passwordEncoder: PasswordEncoder,
+    // 2025/10/06 - JWT추가
+    private val jwtService: JwtService
 ){
-    fun login(request: LoginRequest): Long{
+    fun login(request: LoginRequest): String{
         val user = userRepository.findByEmail(request.email)
             ?: throw IllegalArgumentException("이메일 또는 비밀번호가 일치하지 않습니다.")
 
@@ -28,7 +30,9 @@ class LoginService (
             throw IllegalArgumentException("이메일 또는 비밀번호가 일치하지 않습니다.")
         }
 
-        return user.id
+        val userId = user.id
             ?: throw IllegalStateException("회원 ID가 존재하지 않습니다.")
+
+        return jwtService.createAccessToken(userId)
     }
 }
