@@ -53,5 +53,15 @@ class JwtService(
             // 서버 비밀키로 JWT에 서명
             .compact()
             // 설정한 정보를 실제 JWT 문자열로 완성
+
+    }
+    fun getUserId(token: String): Long {
+        return Jwts.parser()
+            .verifyWith(signingKey)
+            .build()
+            .parseSignedClaims(token)
+            .payload
+            .subject
+            .toLong()
     }
 }
