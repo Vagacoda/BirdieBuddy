@@ -10,6 +10,7 @@ import org.springframework.security.web.SecurityFilterChain
 import com.birdiebuddy.birdiebuddyapi.domain.auth.filter.JwtAuthenticationFilter
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.config.http.SessionCreationPolicy
+import jakarta.servlet.http.HttpServletResponse
 
 // 2026/09/18 -15:37 SpringBoot에 비밀번호 해시 전용도구 등록하는 파일
 
@@ -36,6 +37,14 @@ class SecurityConfig (
             // → JWT 방식에 맞는 설정
             .sessionManagement {
                 it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            }
+            .exceptionHandling { exception ->
+                exception.authenticationEntryPoint { _, response, _ ->
+                    response.status = HttpServletResponse.SC_UNAUTHORIZED
+                    response.contentType = "application/json"
+                    response.characterEncoding = "UTF-8"
+                    response.writer.write("""{"message":"인증이 필요합니다."}""")
+                }
             }
             // csrf보호기능 off, 추후 JWT(JsonWebToken)을 Authorization헤더에 넣어 보내는 API방식 사용
             // 로그인한 사용자가 요청할때마다 로그인상태를 증명해야하기 때문에 번거롭지 않게 JWT를 사용.
