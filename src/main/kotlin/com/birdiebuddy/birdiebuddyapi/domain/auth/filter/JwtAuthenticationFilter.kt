@@ -30,7 +30,6 @@ class JwtAuthenticationFilter(
         // 요청 정보, 응답 정보, 다음 필터로 가는 통로를 받음
     ) {
         val authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION)
-        println("Authorization 헤더: $authorizationHeader")
         // 요청 헤더의 Authorization 값을 가져옴
 
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
