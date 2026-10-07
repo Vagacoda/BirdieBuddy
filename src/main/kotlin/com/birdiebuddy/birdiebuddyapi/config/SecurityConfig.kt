@@ -6,11 +6,17 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
+// 2026/10/07 - 19:56 JWT설정
+import com.birdiebuddy.birdiebuddyapi.domain.auth.filter.JwtAuthenticationFilter
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.security.config.http.SessionCreationPolicy
 
 // 2026/09/18 -15:37 SpringBoot에 비밀번호 해시 전용도구 등록하는 파일
 
 @Configuration // SpringSecurity 설정 클래스
-class SecurityConfig { // 보안 설정 클래스
+class SecurityConfig (
+    private val jwtAuthenticationFilter: JwtAuthenticationFilter
+){ // 보안 설정 클래스
 
     @Bean // @Bean은 이 함수가 만든 객체를 SpringBoot가 관리하도록 함
     fun passwordEncoder(): PasswordEncoder{
@@ -23,6 +29,14 @@ class SecurityConfig { // 보안 설정 클래스
         // SpringSecurity에 접근규칙 생성, SpringBoot에 등록. HttpSecurity를 http변수명으로 사용
         http
             .csrf { it.disable() }
+            // 2026/10/07 - 20:48
+            // STATELESS
+            // → 서버가 로그인 세션을 생성·저장하지 않음
+            // → 요청마다 Authorization 헤더의 JWT를 직접 검증
+            // → JWT 방식에 맞는 설정
+            .sessionManagement {
+                it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            }
             // csrf보호기능 off, 추후 JWT(JsonWebToken)을 Authorization헤더에 넣어 보내는 API방식 사용
             // 로그인한 사용자가 요청할때마다 로그인상태를 증명해야하기 때문에 번거롭지 않게 JWT를 사용.
             .authorizeHttpRequests { auth -> // 주소별 접근 권한 설정이며, API 접근 권한을 정함
@@ -35,7 +49,10 @@ class SecurityConfig { // 보안 설정 클래스
                 // /api/users(회원가입 API주소) 는 비회원도 접근 가능.
                 auth.anyRequest().authenticated()
                 // 그 외 모든 주소는 JWT 등으로 로그인 인증을 통과한 회원만 접근가능.
-            }
+            }.addFilterBefore(
+                jwtAuthenticationFilter,
+                UsernamePasswordAuthenticationFilter::class.java
+            )
         // http.csrf{}
         // http.authorizeHttpRequests{}
         return http.build()
