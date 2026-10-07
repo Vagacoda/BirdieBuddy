@@ -11,6 +11,7 @@ import com.birdiebuddy.birdiebuddyapi.domain.auth.filter.JwtAuthenticationFilter
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.config.http.SessionCreationPolicy
 import jakarta.servlet.http.HttpServletResponse
+import org.springframework.boot.web.servlet.FilterRegistrationBean
 
 // 2026/09/18 -15:37 SpringBoot에 비밀번호 해시 전용도구 등록하는 파일
 
@@ -22,6 +23,16 @@ class SecurityConfig (
     @Bean // @Bean은 이 함수가 만든 객체를 SpringBoot가 관리하도록 함
     fun passwordEncoder(): PasswordEncoder{
         return BCryptPasswordEncoder() // Bcrypt 방식 비밀번호 처리도구를 새로 만들어 반환
+    }
+
+    @Bean
+    fun jwtAuthenticationFilterRegistration(
+        jwtAuthenticationFilter: JwtAuthenticationFilter
+    ): FilterRegistrationBean<JwtAuthenticationFilter> {
+        val registration = FilterRegistrationBean<JwtAuthenticationFilter>()
+        registration.filter = jwtAuthenticationFilter
+        registration.isEnabled = false
+        return registration
     }
 
     // 어떤 API에 누가 접근할 수 있는지 정하는 보안 규칙
