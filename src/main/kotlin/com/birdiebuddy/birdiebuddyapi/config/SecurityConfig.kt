@@ -29,8 +29,7 @@ class SecurityConfig (
     fun jwtAuthenticationFilterRegistration(
         jwtAuthenticationFilter: JwtAuthenticationFilter
     ): FilterRegistrationBean<JwtAuthenticationFilter> {
-        val registration = FilterRegistrationBean<JwtAuthenticationFilter>()
-        registration.filter = jwtAuthenticationFilter
+        val registration = FilterRegistrationBean<JwtAuthenticationFilter>(jwtAuthenticationFilter)
         registration.isEnabled = false
         return registration
     }

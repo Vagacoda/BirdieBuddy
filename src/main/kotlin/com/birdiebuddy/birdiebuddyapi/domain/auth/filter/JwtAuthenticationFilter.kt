@@ -50,7 +50,10 @@ class JwtAuthenticationFilter(
                 emptyList<GrantedAuthority>()
             )
 
-            SecurityContextHolder.getContext().authentication = authentication
+            //SecurityContextHolder.getContext().authentication = authentication
+            val securityContext = SecurityContextHolder.createEmptyContext()
+            securityContext.authentication = authentication
+            SecurityContextHolder.setContext(securityContext)
         } catch (exception: JwtException) {
             response.status = HttpServletResponse.SC_UNAUTHORIZED
             response.contentType = "application/json"
