@@ -12,6 +12,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.config.http.SessionCreationPolicy
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.boot.web.servlet.FilterRegistrationBean
+import jakarta.servlet.DispatcherType
 
 // 2026/09/18 -15:37 SpringBoot에 비밀번호 해시 전용도구 등록하는 파일
 
@@ -59,6 +60,7 @@ class SecurityConfig (
             // csrf보호기능 off, 추후 JWT(JsonWebToken)을 Authorization헤더에 넣어 보내는 API방식 사용
             // 로그인한 사용자가 요청할때마다 로그인상태를 증명해야하기 때문에 번거롭지 않게 JWT를 사용.
             .authorizeHttpRequests { auth -> // 주소별 접근 권한 설정이며, API 접근 권한을 정함
+                auth.dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                 auth.requestMatchers(
                     "/api/users",
                     "/api/users/email-availability",
