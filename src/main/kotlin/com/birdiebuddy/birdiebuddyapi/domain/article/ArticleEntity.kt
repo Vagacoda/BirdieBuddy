@@ -29,29 +29,39 @@ class ArticleEntity(
     // 한 회원이 다수의 게시글을 작성할 수 있으므로 ManyToOne
     // 회원정보까지 가져오지 않고 article.user를 사용할 때 조회하는 방식
     @JoinColumn(name = "user_id", nullable = false)
+    // user_id 열을 외래 키로 사용, 비어있을 수 없으므로 nullable은 false
     var user: UserEntity? = null,
+
 
     @Column(nullable = false, length = 20)
     var type: String = "",
 
+    // 게시글 카테고리 (ex: 자유글, 질문글 등)
     @Column(nullable = false, length = 20)
     var category: String = "",
 
+
+    // 게시글 제목
     @Column(nullable = false, length = 200)
     var title: String = "",
 
+    // 게시글 내용
     @Column(nullable = false, columnDefinition = "LONGTEXT")
     var content: String = "",
 
+    // 조회수
     @Column(name = "view_count", nullable = false)
     var viewCount: Int = 0,
 
+    // 게시글 작성시각
     @Column(name = "created_at", nullable = false, updatable = false)
     var createdAt: LocalDateTime = LocalDateTime.now(),
 
+    // 게시글 수정 시각
     @Column(name = "updated_at", nullable = false)
     var updatedAt: LocalDateTime = LocalDateTime.now(),
 
+    // 게시글 삭제 시각
     @Column(name = "deleted_at")
     var deletedAt: LocalDateTime? = null
 ) {
