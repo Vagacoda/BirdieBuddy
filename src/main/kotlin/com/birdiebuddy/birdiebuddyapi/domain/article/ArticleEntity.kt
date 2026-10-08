@@ -33,6 +33,7 @@ class ArticleEntity(
     var user: UserEntity? = null,
 
 
+    // 게시글 타입(일반글, 공지글 구분용)
     @Column(nullable = false, length = 20)
     var type: String = "",
 
