@@ -9,15 +9,20 @@ import jakarta.validation.constraints.Size
 
 data class ArticleCreateRequest(
     @field:NotBlank(message = "카테고리를 입력해주세요.")
+    // "" 또는 "   " 같은 값이면 요청을 거절
     @field:Size(max = 20, message = "카테고리는 20자 이하여야 합니다.")
+    // category VARCHAR(20)보다 긴 값이 들어가지 못하게 막음
     val category: String,
+    // 카테고리값 받음
 
     @field:NotBlank(message = "제목을 입력해주세요.")
     @field:Size(max = 200, message = "제목은 200자 이하여야 합니다.")
     val title: String,
+    // 제목을 받는 부분
 
     @field:NotBlank(message = "내용을 입력해주세요.")
     val content: String
+    // 게시글 본문 받음
 )
 
 // JSON 예시
