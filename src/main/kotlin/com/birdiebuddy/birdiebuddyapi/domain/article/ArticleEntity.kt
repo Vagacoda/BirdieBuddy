@@ -35,7 +35,7 @@ class ArticleEntity(
 
     // 게시글 타입(일반글, 공지글 구분용)
     @Column(nullable = false, length = 20)
-    var type: String = "",
+    var type: String = "NORMAL",
 
     // 게시글 카테고리 (ex: 자유글, 질문글 등)
     @Column(nullable = false, length = 20)
