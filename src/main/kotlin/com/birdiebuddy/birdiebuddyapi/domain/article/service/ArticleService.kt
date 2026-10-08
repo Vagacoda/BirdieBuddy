@@ -35,7 +35,9 @@ class ArticleService(
         )
 
         val savedArticle = articleRepository.save(article)
+        // 완성한 게시글 객체를 DB Article 테이블에 저장
 
-        return savedArticle.id!!
+        return savedArticle.id!! // !!: 절대로 null이 아니다
+        // 저장된 게시글 ID를 Controller에반환
     }
 }
