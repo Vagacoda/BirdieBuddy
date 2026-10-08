@@ -21,8 +21,10 @@ class ArticleController(
 ) {
     @PostMapping
     fun createArticle(
-        authentication: Authentication,
+        authentication: Authentication,// JWT로 로그인 확인이 끝난 회원 정보를 받는 변수
         @Valid @RequestBody request: ArticleCreateRequest
+        // Valid : ArticleCreateRequest에 붙인 입력값 검사 규칙을 실행 (ex: 빈값이면 400 Bad Request로 막음)
+        // RequestBody : HTTP 요청 본문의 JSON을 Kotlin 객체로 바꾸라는 요청
     ): ResponseEntity<Map<String, Any>> {
         val userId = authentication.principal as Long
         // JWT 필터가 저장한 로그인 회원 ID를 꺼냄
