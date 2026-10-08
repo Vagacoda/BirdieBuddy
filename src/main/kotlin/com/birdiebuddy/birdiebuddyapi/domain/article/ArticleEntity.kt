@@ -68,7 +68,10 @@ class ArticleEntity(
     @PreUpdate
     fun updateModifiedTime() {
         updatedAt = LocalDateTime.now()
+        // JPA가 기존 게시글을 수정해서 DB의 UPDATE SQL을 실행하기 직전에 자동으로 호출,
+        // 제목이나 본문을 수정하면 updated_at이 자동으로 현재 시각으로 바뀜
     }
 }
 
 interface ArticleRepository : JpaRepository<ArticleEntity, Long>
+// 게시글 테이블에 접근하는 도구
