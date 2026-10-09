@@ -76,6 +76,7 @@ class ArticleEntity(
 
 interface ArticleRepository : JpaRepository<ArticleEntity, Long>{
     // 2026/10/09 - 21:24
+    // 삭제되지 않은 글만, 최신 글부터
     fun findAllByDeletedAtIsNullOrderByCreatedAtDesc(): List<ArticleEntity>
 }
 // 게시글 테이블에 접근하는 도구
