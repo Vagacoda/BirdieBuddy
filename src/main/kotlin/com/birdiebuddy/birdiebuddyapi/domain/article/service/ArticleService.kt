@@ -44,17 +44,25 @@ class ArticleService(
     }
 
     // 2026/10/09 - 21:32
+    // 삭제되지 않은 게시글 전체를 최신순으로 조회
+    //→ ArticleEntity 목록을 하나씩 꺼냄
+    //→ 목록 화면에 필요한 값만 ArticleListResponse로 변환
+    //→ ArticleListResponse 목록 반환
 
     fun getArticleList(): List<ArticleListResponse> {
+        // 한 개가 아니라 여러 개를 반환
         val articles = articleRepository
             .findAllByDeletedAtIsNullOrderByCreatedAtDesc()
 
         return articles.map { article ->
+            // map은 목록 안의 데이터를 하나씩 다른 형태로 바꿈
             val articleId = article.id
                 ?: throw IllegalStateException("게시글 ID가 없습니다.")
+            // 게시글 ID가 null일때 출력
 
             val user = article.user
                 ?: throw IllegalStateException("게시글 작성자 정보가 없습니다.")
+            // 유저 없으면 출력
 
             ArticleListResponse(
                 id = articleId,
