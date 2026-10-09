@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+// 2026/10/09 - 22:38
+import com.birdiebuddy.birdiebuddyapi.domain.article.ArticleListResponse
+import org.springframework.web.bind.annotation.GetMapping
 
 // 2026/10/08 - 22:23
 // ArticleController
@@ -19,6 +22,14 @@ import org.springframework.web.bind.annotation.RestController
 class ArticleController(
     private val articleService: ArticleService
 ) {
+    // 2025/10/09 - 22:44
+    @GetMapping
+    fun getArticleList(): ResponseEntity<List<ArticleListResponse>> {
+        val articles = articleService.getArticleList()
+
+        return ResponseEntity.ok(articles)
+    }
+
     @PostMapping
     fun createArticle(
         authentication: Authentication,// JWT로 로그인 확인이 끝난 회원 정보를 받는 변수
