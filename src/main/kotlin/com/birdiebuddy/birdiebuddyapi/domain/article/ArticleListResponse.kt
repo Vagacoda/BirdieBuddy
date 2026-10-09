@@ -13,4 +13,5 @@ data class ArticleListResponse(
     val authorNickname: String,
     val viewCount: Int,
     val createdAt: LocalDateTime
+    // 추후 추천수, 댓글수도 추가 예정
 )
