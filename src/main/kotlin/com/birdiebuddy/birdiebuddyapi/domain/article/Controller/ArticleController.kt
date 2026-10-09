@@ -23,6 +23,7 @@ class ArticleController(
     private val articleService: ArticleService
 ) {
     // 2025/10/09 - 22:44
+    // 게시글 목록 조회
     @GetMapping
     fun getArticleList(): ResponseEntity<List<ArticleListResponse>> {
         val articles = articleService.getArticleList()
