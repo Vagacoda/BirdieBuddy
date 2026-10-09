@@ -6,6 +6,8 @@ import com.birdiebuddy.birdiebuddyapi.domain.article.ArticleRepository
 import com.birdiebuddy.birdiebuddyapi.domain.user.UserRepository
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
+// 2026/10/09 - 21:32
+import com.birdiebuddy.birdiebuddyapi.domain.article.ArticleListResponse
 
 // 2026/10/08 - 21:44
 // ArticleService
@@ -39,5 +41,30 @@ class ArticleService(
 
         return savedArticle.id!! // !!: 절대로 null이 아니다
         // 저장된 게시글 ID를 Controller에반환
+    }
+
+    // 2026/10/09 - 21:32
+
+    fun getArticleList(): List<ArticleListResponse> {
+        val articles = articleRepository
+            .findAllByDeletedAtIsNullOrderByCreatedAtDesc()
+
+        return articles.map { article ->
+            val articleId = article.id
+                ?: throw IllegalStateException("게시글 ID가 없습니다.")
+
+            val user = article.user
+                ?: throw IllegalStateException("게시글 작성자 정보가 없습니다.")
+
+            ArticleListResponse(
+                id = articleId,
+                type = article.type,
+                category = article.category,
+                title = article.title,
+                authorNickname = user.nickname,
+                viewCount = article.viewCount,
+                createdAt = article.createdAt
+            )
+        }
     }
 }
