@@ -78,18 +78,23 @@ class ArticleService(
         }
     }
     fun getArticleDetail(articleId: Long): ArticleDetailResponse {
+        // 게시글 ID를 받아서 글 한 건의 상세 정보를 반환
         val article = articleRepository
             .findByIdAndDeletedAtIsNull(articleId)
             ?: throw IllegalArgumentException("존재하지 않거나 삭제된 게시글입니다.")
+        // findByIdAndDeletedAtIsNull()은 글이 없으면 null을 반환
 
         article.viewCount += 1
+        // 조회수 올라감
 
         val user = article.user
             ?: throw IllegalStateException("게시글 작성자 정보가 없습니다.")
+        // 게시글 작성자 정보를 가져옴
 
         return ArticleDetailResponse(
             id = article.id
                 ?: throw IllegalStateException("게시글 ID가 없습니다."),
+            // ID가 없다면 예외처리
             type = article.type,
             category = article.category,
             title = article.title,
