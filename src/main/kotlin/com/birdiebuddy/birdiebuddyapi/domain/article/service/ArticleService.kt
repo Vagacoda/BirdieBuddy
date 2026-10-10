@@ -77,4 +77,27 @@ class ArticleService(
             )
         }
     }
+    fun getArticleDetail(articleId: Long): ArticleDetailResponse {
+        val article = articleRepository
+            .findByIdAndDeletedAtIsNull(articleId)
+            ?: throw IllegalArgumentException("존재하지 않거나 삭제된 게시글입니다.")
+
+        article.viewCount += 1
+
+        val user = article.user
+            ?: throw IllegalStateException("게시글 작성자 정보가 없습니다.")
+
+        return ArticleDetailResponse(
+            id = article.id
+                ?: throw IllegalStateException("게시글 ID가 없습니다."),
+            type = article.type,
+            category = article.category,
+            title = article.title,
+            content = article.content,
+            authorNickname = user.nickname,
+            viewCount = article.viewCount,
+            createdAt = article.createdAt,
+            updatedAt = article.updatedAt
+        )
+    }
 }
