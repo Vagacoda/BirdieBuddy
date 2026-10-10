@@ -67,8 +67,13 @@ class ArticleController(
         // → URL의 1을 꺼냄
         // → articleId: Long에 1 저장
     ): ResponseEntity<ArticleDetailResponse> {
+        // 상세 게시글 한 건을 HTTP 응답으로 반환
+        // ResponseEntity: 상태 코드와 응답 본문을 함께 반환
+        // ArticleDetailResponse: 제목, 본문, 작성자, 조회 수, 작성·수정 시각을 담은 상세 정보
         val article = articleService.getArticleDetail(articleId)
+        // articleService가 DB조회 하도록 함
 
         return ResponseEntity.ok(article)
+        //200 OK 상태 코드와 함께 JSON으로 반환
     }
 }
