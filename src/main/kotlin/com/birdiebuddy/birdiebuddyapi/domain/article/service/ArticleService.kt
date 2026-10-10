@@ -99,10 +99,13 @@ class ArticleService(
             category = article.category,
             title = article.title,
             content = article.content,
+            // 여기까지가 기본 데이터
             authorNickname = user.nickname,
+            // 유저 별명
             viewCount = article.viewCount,
             createdAt = article.createdAt,
             updatedAt = article.updatedAt
+            // 각종 시각들
         )
     }
 }
