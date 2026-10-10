@@ -78,5 +78,13 @@ interface ArticleRepository : JpaRepository<ArticleEntity, Long>{
     // 2026/10/09 - 21:24
     // 삭제되지 않은 글만, 최신 글부터
     fun findAllByDeletedAtIsNullOrderByCreatedAtDesc(): List<ArticleEntity>
+
+    // 2026/10/10 - 20:47
+    // 게시글 상세 조회
+    fun findByIdAndDeletedAtIsNull(id: Long): ArticleEntity?
+    // 게시글 ID가 입력한 id와 같고
+    //→ deleted_at이 NULL인 경우만 찾음
+    //→ 있으면 ArticleEntity 반환
+    //→ 없거나 삭제된 글이면 null 반환
 }
 // 게시글 테이블에 접근하는 도구
