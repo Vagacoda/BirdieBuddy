@@ -8,6 +8,8 @@ import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 // 2026/10/09 - 21:32
 import com.birdiebuddy.birdiebuddyapi.domain.article.ArticleListResponse
+// 2026/10/10 - 20:53
+import com.birdiebuddy.birdiebuddyapi.domain.article.ArticleDetailResponse
 
 // 2026/10/08 - 21:44
 // ArticleService
