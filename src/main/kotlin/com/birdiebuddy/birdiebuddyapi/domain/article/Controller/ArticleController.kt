@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController
 // 2026/10/09 - 22:38
 import com.birdiebuddy.birdiebuddyapi.domain.article.ArticleListResponse
 import org.springframework.web.bind.annotation.GetMapping
+import com.birdiebuddy.birdiebuddyapi.domain.article.ArticleDetailResponse
+import org.springframework.web.bind.annotation.PathVariable
 
 // 2026/10/08 - 22:23
 // ArticleController
@@ -53,5 +55,20 @@ class ArticleController(
             )
             // JSON형태로 반환
         )
+    }
+
+    // 상세조회
+    @GetMapping("/{articleId}")
+    fun getArticleDetail(
+        @PathVariable articleId: Long
+        // 게시글 번호를 함수 변수로 받음
+        // URL 경로의 값을 가져오라는 뜻
+        // GET /api/articles/1
+        // → URL의 1을 꺼냄
+        // → articleId: Long에 1 저장
+    ): ResponseEntity<ArticleDetailResponse> {
+        val article = articleService.getArticleDetail(articleId)
+
+        return ResponseEntity.ok(article)
     }
 }
