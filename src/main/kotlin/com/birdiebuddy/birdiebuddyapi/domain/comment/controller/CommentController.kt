@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController
 class CommentController(
     private val commentService: CommentService
 ) {
+    // 댓글 작성 요청
     @PostMapping
     fun createComment(
         @PathVariable articleId: Long,
@@ -44,6 +45,7 @@ class CommentController(
         return ResponseEntity.status(HttpStatus.CREATED).body(comment)
     }
 
+    // 댓글 조회 요청
     @GetMapping
     fun getCommentList(
         @PathVariable articleId: Long
