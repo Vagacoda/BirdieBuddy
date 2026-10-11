@@ -56,4 +56,7 @@ interface ArticleVoteRepository : JpaRepository<ArticleVoteEntity, Long> {
         voteType: String
     ): Long
     // 이 게시글의 추천이 몇 개인지 확인
+    // countBy       → 조건에 맞는 행 개수를 세어라
+    // Article_Id    → 게시글 번호가 전달받은 값이고
+    // AndVoteType   → 투표 종류도 전달받은 값인 행
 }
