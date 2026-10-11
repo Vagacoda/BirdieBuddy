@@ -26,14 +26,19 @@ class CommentController(
     fun createComment(
         @PathVariable articleId: Long,
         authentication: Authentication,
+        // JSON형태로 받음
+        // n번 게시글의 ID를 가져옴
         @Valid @RequestBody request: CommentCreateRequest
     ): ResponseEntity<CommentResponse> {
+        // CommentCreateRequest에서 설정한 예외처리문의 규칙에 맞는지 검증.
+        // JSON의 content를 CommentCreateRequest 객체로 바꿈
         val userId = authentication.principal as Long
+        // JWT에서 받음 유저 ID
 
         val comment = commentService.createComment(
             articleId = articleId,
             userId = userId,
-            request = request
+            request = request // content등의 정보가 있음
         )
 
         return ResponseEntity.status(HttpStatus.CREATED).body(comment)
