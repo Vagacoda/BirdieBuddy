@@ -51,6 +51,7 @@ class CommentController(
         @PathVariable articleId: Long
     ): ResponseEntity<List<CommentResponse>> {
         val comments = commentService.getCommentList(articleId)
+        // 실제 댓글 조회
 
         return ResponseEntity.ok(comments)
     }
