@@ -274,3 +274,4 @@ S/W프로젝트 기획 및 개발 계획
 시퀀스 다이어그램, 스윔레인 다이어그램 학습하고 직접 그려보기.
 
 https://app.notion.com/p/2026-2-S-W-3d1bf5a0b328802398d5fc2b4f51ae5c
+https://app.notion.com/p/S-W-6-3f7bf5a0b32880758c23d2a0f2e4d162?source=copy_link
