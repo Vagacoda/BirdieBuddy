@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size
 // 2026/10/24 - 게시글 수정(게시글 수정 요청)
 
 data class ArticleUpdateRequest(
+
     @field:NotBlank(message = "카테고리를 입력해주세요.")
     @field:Size(max = 20, message = "카테고리는 20자 이하여야 합니다.")
     val category: String,

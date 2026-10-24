@@ -10,6 +10,10 @@ import org.springframework.stereotype.Service
 import com.birdiebuddy.birdiebuddyapi.domain.article.ArticleListResponse
 // 2026/10/10 - 20:53
 import com.birdiebuddy.birdiebuddyapi.domain.article.ArticleDetailResponse
+// 2026/10/24 - 18:43
+import com.birdiebuddy.birdiebuddyapi.domain.article.ArticleUpdateRequest
+import org.springframework.http.HttpStatus
+import org.springframework.web.server.ResponseStatusException
 
 // 2026/10/08 - 21:44
 // ArticleService
@@ -107,5 +111,37 @@ class ArticleService(
             updatedAt = article.updatedAt
             // 각종 시각들
         )
+    }
+    // 2026/10/24 - 게시글 수정 서비스
+    fun updateArticle(
+        articleId: Long, //어떤 게시글 수정할지
+        userId: Long, // 누가 수정할지
+        request: ArticleUpdateRequest // 무엇으로 수정할지
+    ) {
+        // 수정할 게시글 조회
+        val article = articleRepository
+            .findByIdAndDeletedAtIsNull(articleId)
+            ?: throw ResponseStatusException(
+                HttpStatus.NOT_FOUND, // 404 NotFound
+                "존재하지 않거나 삭제된 게시글입니다."
+            )
+
+        // 게시글 작성자 확인
+        val author = article.user
+            ?: throw IllegalStateException("게시글 작성자 정보가 없습니다.")
+
+        // 작성자와 수정 요청자가 다르면 차단
+        if (author.id != userId) {
+            throw ResponseStatusException(
+                HttpStatus.FORBIDDEN, // 403 Forbidden
+                "본인이 작성한 게시글만 수정할 수 있습니다."
+            )
+        }
+
+        // 요청받은 값으로 변경
+        // ArticleUpdateRequest값을 삽입
+        article.category = request.category
+        article.title = request.title
+        article.content = request.content
     }
 }
