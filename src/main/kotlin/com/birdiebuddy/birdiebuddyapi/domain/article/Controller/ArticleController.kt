@@ -15,6 +15,9 @@ import com.birdiebuddy.birdiebuddyapi.domain.article.ArticleListResponse
 import org.springframework.web.bind.annotation.GetMapping
 import com.birdiebuddy.birdiebuddyapi.domain.article.ArticleDetailResponse
 import org.springframework.web.bind.annotation.PathVariable
+// 2026/10/21 - 19:21
+import com.birdiebuddy.birdiebuddyapi.domain.article.ArticleUpdateRequest
+import org.springframework.web.bind.annotation.PutMapping
 
 // 2026/10/08 - 22:23
 // ArticleController
@@ -75,5 +78,27 @@ class ArticleController(
 
         return ResponseEntity.ok(article)
         //200 OK 상태 코드와 함께 JSON으로 반환
+    }
+
+    // 게시글 수정
+    @PutMapping("/{articleId}") // Put(기존데이터 수정)요청을 받아서 다음 함수실행
+    fun updateArticle(
+        @PathVariable articleId: Long,
+        authentication: Authentication,
+        @Valid @RequestBody request: ArticleUpdateRequest
+    ): ResponseEntity<Map<String, String>> {
+        // JWT 인증 정보에서 수정 요청자의 회원 ID를 꺼냄
+        val userId = authentication.principal as Long
+
+        // 게시글 조회, 작성자 확인, 내용 수정을 Service에 맡김
+        articleService.updateArticle(
+            articleId = articleId,
+            userId = userId,
+            request = request
+        )
+
+        return ResponseEntity.ok(
+            mapOf("message" to "게시글이 수정되었습니다.")
+        )
     }
 }
