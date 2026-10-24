@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable
 // 2026/10/21 - 19:21
 import com.birdiebuddy.birdiebuddyapi.domain.article.ArticleUpdateRequest
 import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.DeleteMapping
 
 // 2026/10/08 - 22:23
 // ArticleController
@@ -99,6 +100,26 @@ class ArticleController(
 
         return ResponseEntity.ok(
             mapOf("message" to "게시글이 수정되었습니다.")
+        )
+    }
+
+    // 게시글 삭제
+    @DeleteMapping("/{articleId}")
+    fun deleteArticle(
+        @PathVariable articleId: Long,
+        authentication: Authentication
+    ): ResponseEntity<Map<String, String>> {
+        // JWT로 확인한 로그인 회원 ID
+        val userId = authentication.principal as Long
+
+        // 작성자 확인과 삭제 처리를 Service에 맡김
+        articleService.deleteArticle(
+            articleId = articleId,
+            userId = userId
+        )
+
+        return ResponseEntity.ok(
+            mapOf("message" to "게시글이 삭제되었습니다.")
         )
     }
 }

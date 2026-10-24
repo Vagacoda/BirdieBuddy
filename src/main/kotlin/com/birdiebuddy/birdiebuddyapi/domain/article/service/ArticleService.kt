@@ -155,7 +155,7 @@ class ArticleService(
         val article = articleRepository
             .findByIdAndDeletedAtIsNull(articleId)
             ?: throw ResponseStatusException(
-                HttpStatus.NOT_FOUND,
+                HttpStatus.NOT_FOUND, // 404 NotFound
                 "존재하지 않거나 삭제된 게시글입니다."
             )
 
@@ -166,7 +166,7 @@ class ArticleService(
         // 작성자 본인만 삭제 가능
         if (author.id != userId) {
             throw ResponseStatusException(
-                HttpStatus.FORBIDDEN,
+                HttpStatus.FORBIDDEN, // 401 Forbidden
                 "본인이 작성한 게시글만 삭제할 수 있습니다."
             )
         }
