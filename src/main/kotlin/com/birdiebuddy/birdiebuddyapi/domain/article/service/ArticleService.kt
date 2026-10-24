@@ -14,6 +14,7 @@ import com.birdiebuddy.birdiebuddyapi.domain.article.ArticleDetailResponse
 import com.birdiebuddy.birdiebuddyapi.domain.article.ArticleUpdateRequest
 import org.springframework.http.HttpStatus
 import org.springframework.web.server.ResponseStatusException
+import java.time.LocalDateTime
 
 // 2026/10/08 - 21:44
 // ArticleService
@@ -143,5 +144,34 @@ class ArticleService(
         article.category = request.category
         article.title = request.title
         article.content = request.content
+    }
+
+    // 게시글 삭제 서비스
+    fun deleteArticle(
+        articleId: Long,
+        userId: Long
+    ) {
+        // 삭제되지 않은 게시글 조회
+        val article = articleRepository
+            .findByIdAndDeletedAtIsNull(articleId)
+            ?: throw ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "존재하지 않거나 삭제된 게시글입니다."
+            )
+
+        // 게시글 작성자 확인
+        val author = article.user
+            ?: throw IllegalStateException("게시글 작성자 정보가 없습니다.")
+
+        // 작성자 본인만 삭제 가능
+        if (author.id != userId) {
+            throw ResponseStatusException(
+                HttpStatus.FORBIDDEN,
+                "본인이 작성한 게시글만 삭제할 수 있습니다."
+            )
+        }
+
+        // 삭제 시각을 기록하여 삭제 처리
+        article.deletedAt = LocalDateTime.now()
     }
 }
