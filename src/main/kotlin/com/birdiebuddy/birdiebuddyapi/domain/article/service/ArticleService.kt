@@ -86,7 +86,10 @@ class ArticleService(
         // 게시글 ID를 받아서 글 한 건의 상세 정보를 반환
         val article = articleRepository
             .findByIdAndDeletedAtIsNull(articleId)
-            ?: throw IllegalArgumentException("존재하지 않거나 삭제된 게시글입니다.")
+            ?: throw ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "존재하지 않거나 삭제된 게시글입니다."
+            )
         // findByIdAndDeletedAtIsNull()은 글이 없으면 null을 반환
 
         article.viewCount += 1
