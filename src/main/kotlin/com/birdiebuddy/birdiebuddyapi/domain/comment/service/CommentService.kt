@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service
 import com.birdiebuddy.birdiebuddyapi.domain.comment.CommentUpdateRequest
 import org.springframework.http.HttpStatus
 import org.springframework.web.server.ResponseStatusException
+import java.time.LocalDateTime
 
 // 2026/10/11 - 18:39
 // 댓글 저장과 댓글 목록 조회
@@ -108,6 +109,42 @@ class CommentService(
 
         // 요청받은 내용으로 변경
         comment.content = request.content
+    }
+
+    // 댓글 삭제 서비스
+    fun deleteComment(
+        articleId: Long,
+        commentId: Long,
+        userId: Long
+    ) {
+        // 부모 게시글 확인
+        articleRepository.findByIdAndDeletedAtIsNull(articleId)
+            ?: throw ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "존재하지 않거나 삭제된 게시글입니다."
+            )
+
+        // 해당 게시글에 속한 삭제되지 않은 댓글 조회
+        val comment = commentRepository
+            .findByIdAndArticle_IdAndDeletedAtIsNull(commentId, articleId)
+            ?: throw ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "존재하지 않거나 삭제된 댓글입니다."
+            )
+
+        // 댓글 작성자 확인
+        val author = comment.user
+            ?: throw IllegalStateException("댓글 작성자 정보가 없습니다.")
+
+        if (author.id != userId) {
+            throw ResponseStatusException(
+                HttpStatus.FORBIDDEN,
+                "본인이 작성한 댓글만 삭제할 수 있습니다."
+            )
+        }
+
+        // 삭제 시각 기록
+        comment.deletedAt = LocalDateTime.now()
     }
 
 

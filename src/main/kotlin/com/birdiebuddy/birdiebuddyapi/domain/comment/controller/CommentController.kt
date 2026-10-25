@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 // 2026/10/25 - 댓글 수정 컨트롤러
 import com.birdiebuddy.birdiebuddyapi.domain.comment.CommentUpdateRequest
 import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.DeleteMapping
 
 // 2026/10/11 - 19:09
 // CommentController
@@ -80,6 +81,28 @@ class CommentController(
 
         return ResponseEntity.ok(
             mapOf("message" to "댓글이 수정되었습니다.")
+        )
+    }
+
+    // 댓글 삭제 컨트롤러
+    @DeleteMapping("/{commentId}")
+    fun deleteComment(
+        @PathVariable articleId: Long,
+        @PathVariable commentId: Long,
+        authentication: Authentication
+    ): ResponseEntity<Map<String, String>> {
+        // JWT로 확인한 삭제 요청자의 회원 ID
+        val userId = authentication.principal as Long
+
+        // 게시글·댓글 확인, 작성자 확인, 삭제 처리
+        commentService.deleteComment(
+            articleId = articleId,
+            commentId = commentId,
+            userId = userId
+        )
+
+        return ResponseEntity.ok(
+            mapOf("message" to "댓글이 삭제되었습니다.")
         )
     }
 }
