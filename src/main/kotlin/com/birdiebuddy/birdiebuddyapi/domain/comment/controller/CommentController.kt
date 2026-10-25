@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+// 2026/10/25 - 댓글 수정 컨트롤러
+import com.birdiebuddy.birdiebuddyapi.domain.comment.CommentUpdateRequest
+import org.springframework.web.bind.annotation.PutMapping
 
 // 2026/10/11 - 19:09
 // CommentController
@@ -54,5 +57,29 @@ class CommentController(
         // 실제 댓글 조회
 
         return ResponseEntity.ok(comments)
+    }
+
+    // 댓글 수정
+    @PutMapping("/{commentId}")
+    fun updateComment(
+        @PathVariable articleId: Long,
+        @PathVariable commentId: Long,
+        authentication: Authentication,
+        @Valid @RequestBody request: CommentUpdateRequest
+    ): ResponseEntity<Map<String, String>> {
+        // JWT로 확인한 수정 요청자의 회원 ID
+        val userId = authentication.principal as Long
+
+        // 게시글·댓글 확인, 작성자 확인, 내용 변경
+        commentService.updateComment(
+            articleId = articleId,
+            commentId = commentId,
+            userId = userId,
+            request = request
+        )
+
+        return ResponseEntity.ok(
+            mapOf("message" to "댓글이 수정되었습니다.")
+        )
     }
 }

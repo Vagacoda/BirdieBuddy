@@ -72,7 +72,7 @@ class CommentService(
         }
         // CommentEntity 목록을 CommentResponse 목록으로 바꿈
     }
-    // 2026/10/25 - 댓글 수정
+    // 2026/10/25 - 댓글 수정 서비스
     fun updateComment(
         articleId: Long,
         commentId: Long,
