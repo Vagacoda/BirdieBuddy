@@ -8,6 +8,10 @@ import com.birdiebuddy.birdiebuddyapi.domain.comment.CommentResponse
 import com.birdiebuddy.birdiebuddyapi.domain.user.UserRepository
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
+// 2026/10/25
+import com.birdiebuddy.birdiebuddyapi.domain.comment.CommentUpdateRequest
+import org.springframework.http.HttpStatus
+import org.springframework.web.server.ResponseStatusException
 
 // 2026/10/11 - 18:39
 // 댓글 저장과 댓글 목록 조회
@@ -67,6 +71,43 @@ class CommentService(
             toCommentResponse(comment)
         }
         // CommentEntity 목록을 CommentResponse 목록으로 바꿈
+    }
+    // 2026/10/25 - 댓글 수정
+    fun updateComment(
+        articleId: Long,
+        commentId: Long,
+        userId: Long,
+        request: CommentUpdateRequest
+    ) {
+        // 부모 게시글이 존재하고 삭제되지 않았는지 확인
+        articleRepository.findByIdAndDeletedAtIsNull(articleId)
+            ?: throw ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "존재하지 않거나 삭제된 게시글입니다."
+            )
+
+        // 해당 게시글에 속한 삭제되지 않은 댓글 조회
+        val comment = commentRepository
+            .findByIdAndArticle_IdAndDeletedAtIsNull(commentId, articleId)
+            ?: throw ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "존재하지 않거나 삭제된 댓글입니다."
+            )
+
+        // 댓글 작성자 확인
+        val author = comment.user
+            ?: throw IllegalStateException("댓글 작성자 정보가 없습니다.")
+
+        // 댓글 작성자 본인만 수정 가능
+        if (author.id != userId) {
+            throw ResponseStatusException(
+                HttpStatus.FORBIDDEN,
+                "본인이 작성한 댓글만 수정할 수 있습니다."
+            )
+        }
+
+        // 요청받은 내용으로 변경
+        comment.content = request.content
     }
 
 

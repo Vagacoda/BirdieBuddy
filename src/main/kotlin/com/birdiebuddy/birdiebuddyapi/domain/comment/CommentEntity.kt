@@ -63,9 +63,15 @@ class CommentEntity(
     }
 }
 
-interface CommentRepository : JpaRepository<CommentEntity, Long> {
+interface CommentRepository : JpaRepository<CommentEntity, Long>{
+    // 특정 게시글의 삭제되지 않은 댓글 목록 조회
     fun findAllByArticle_IdAndDeletedAtIsNullOrderByCreatedAtAsc(
         articleId: Long
     ): List<CommentEntity>
-    // 특정 게시글의 댓글 목록을 불러오는 함수
+
+    // 특정 게시글에 속한 삭제되지 않은 댓글 한 개 조회
+    fun findByIdAndArticle_IdAndDeletedAtIsNull(
+        commentId: Long,
+        articleId: Long
+    ): CommentEntity?
 }
