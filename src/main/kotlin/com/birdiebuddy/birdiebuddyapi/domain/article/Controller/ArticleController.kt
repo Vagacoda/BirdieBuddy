@@ -19,6 +19,9 @@ import org.springframework.web.bind.annotation.PathVariable
 import com.birdiebuddy.birdiebuddyapi.domain.article.ArticleUpdateRequest
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.DeleteMapping
+// 2026/10/27 - 23:18
+import com.birdiebuddy.birdiebuddyapi.domain.article.ArticlePageResponse
+import org.springframework.web.bind.annotation.RequestParam
 
 // 2026/10/08 - 22:23
 // ArticleController
@@ -31,10 +34,16 @@ class ArticleController(
     // 2025/10/09 - 22:44
     // 게시글 목록 조회
     @GetMapping
-    fun getArticleList(): ResponseEntity<List<ArticleListResponse>> {
-        val articles = articleService.getArticleList()
+    fun getArticleList(
+        @RequestParam(defaultValue = "1") page: Int,
+        @RequestParam(defaultValue = "10") size: Int
+    ): ResponseEntity<ArticlePageResponse> {
+        val result = articleService.getArticleList(
+            page = page,
+            size = size
+        )
 
-        return ResponseEntity.ok(articles)
+        return ResponseEntity.ok(result)
     }
 
     @PostMapping
