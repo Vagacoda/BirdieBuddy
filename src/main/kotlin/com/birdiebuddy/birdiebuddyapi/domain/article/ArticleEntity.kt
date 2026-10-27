@@ -13,6 +13,9 @@ import jakarta.persistence.PreUpdate
 import jakarta.persistence.Table
 import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDateTime
+// 2026/10/27
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 
 // 2026/10/08 - 20:52
 
@@ -86,5 +89,10 @@ interface ArticleRepository : JpaRepository<ArticleEntity, Long>{
     //→ deleted_at이 NULL인 경우만 찾음
     //→ 있으면 ArticleEntity 반환
     //→ 없거나 삭제된 글이면 null 반환
+
+    // 2026/10/27 - 페이지 단위 검색기능
+    fun findAllByDeletedAtIsNull(
+        pageable: Pageable
+    ): Page<ArticleEntity>
 }
 // 게시글 테이블에 접근하는 도구
