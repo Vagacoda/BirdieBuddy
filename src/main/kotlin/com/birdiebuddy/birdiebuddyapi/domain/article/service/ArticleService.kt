@@ -15,6 +15,10 @@ import com.birdiebuddy.birdiebuddyapi.domain.article.ArticleUpdateRequest
 import org.springframework.http.HttpStatus
 import org.springframework.web.server.ResponseStatusException
 import java.time.LocalDateTime
+// 2026/10/27 - 22:56
+import com.birdiebuddy.birdiebuddyapi.domain.article.ArticlePageResponse
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 
 // 2026/10/08 - 21:44
 // ArticleService
@@ -56,21 +60,74 @@ class ArticleService(
     //→ 목록 화면에 필요한 값만 ArticleListResponse로 변환
     //→ ArticleListResponse 목록 반환
 
-    fun getArticleList(): List<ArticleListResponse> {
-        // 한 개가 아니라 여러 개를 반환
-        val articles = articleRepository
-            .findAllByDeletedAtIsNullOrderByCreatedAtDesc()
+    // 2026/10/27 - 페이지 검색을 위해 기존 게시글 검색 기능 주석화
+    //    fun getArticleList(): List<ArticleListResponse> {
+    //        // 한 개가 아니라 여러 개를 반환
+    //        val articles = articleRepository
+    //            .findAllByDeletedAtIsNullOrderByCreatedAtDesc()
+    //
+    //        return articles.map { article ->
+    //            // map은 목록 안의 데이터를 하나씩 다른 형태로 바꿈
+    //            val articleId = article.id
+    //                ?: throw IllegalStateException("게시글 ID가 없습니다.")
+    //            // 게시글 ID가 null일때 출력
+    //
+    //            val user = article.user
+    //                ?: throw IllegalStateException("게시글 작성자 정보가 없습니다.")
+    //            // 유저 없으면 출력
+    //
+    //            ArticleListResponse(
+    //                id = articleId,
+    //                type = article.type,
+    //                category = article.category,
+    //                title = article.title,
+    //                authorNickname = user.nickname,
+    //                viewCount = article.viewCount,
+    //                createdAt = article.createdAt
+    //            )
+    //        }
+    //    }
 
-        return articles.map { article ->
-            // map은 목록 안의 데이터를 하나씩 다른 형태로 바꿈
+    fun getArticleList(
+        page: Int,
+        size: Int
+    ): ArticlePageResponse {
+        // 잘못된 페이지 번호와 조회 개수 차단
+        // 입력값 검사
+        require(page >= 1) {
+            "페이지 번호는 1 이상이어야 합니다."
+        }
+        require(size in 1..100) {
+            "한 페이지의 게시글 수는 1~100개여야 합니다."
+        }
+
+        // 페이지 번호, 조회 개수, 정렬 조건 설정
+        // 조회 조건
+        val pageable = PageRequest.of(
+            page - 1, // 사용자의 1페이지를 Spring Data의 0페이지로 변환
+            size, // 한 페이지에 가져올 글 개수
+            Sort.by( //
+                Sort.Order.desc("createdAt"), // 작성 시각이 최신인 글부터
+                Sort.Order.desc("id") // 작성 시각이 같으면 ID가 큰 글부터
+            )
+        )
+
+        // 해당 페이지의 게시글 조회
+        // DB 조회 후 게시글 목록 변환
+        val articlePage = articleRepository
+            .findAllByDeletedAtIsNull(pageable)
+
+        // Entity 목록을 기존 목록 응답 형태로 변환
+        // 해당 페이지의 글과 전체 글 수 등의 정보
+        val articles = articlePage.content.map { article ->
+            // 예외처리
             val articleId = article.id
                 ?: throw IllegalStateException("게시글 ID가 없습니다.")
-            // 게시글 ID가 null일때 출력
 
             val user = article.user
                 ?: throw IllegalStateException("게시글 작성자 정보가 없습니다.")
-            // 유저 없으면 출력
 
+            //  // 게시글 정보를 응답 객체에 담음
             ArticleListResponse(
                 id = articleId,
                 type = article.type,
@@ -81,7 +138,18 @@ class ArticleService(
                 createdAt = article.createdAt
             )
         }
+
+        // 게시글 목록과 페이지 정보를 함께 반환
+        return ArticlePageResponse(
+            articles = articles,
+            page = page,
+            size = size,
+            totalElements = articlePage.totalElements,
+            totalPages = articlePage.totalPages,
+            hasNext = articlePage.hasNext()
+        )
     }
+
     fun getArticleDetail(articleId: Long): ArticleDetailResponse {
         // 게시글 ID를 받아서 글 한 건의 상세 정보를 반환
         val article = articleRepository
