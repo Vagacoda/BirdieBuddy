@@ -31,20 +31,21 @@ import org.springframework.web.bind.annotation.RequestParam
 class ArticleController(
     private val articleService: ArticleService
 ) {
-    // 2025/10/09 - 22:44
+    // 2026/10/09 - 22:44
     // 게시글 목록 조회
-    @GetMapping
-    fun getArticleList(
-        @RequestParam(defaultValue = "1") page: Int,
-        @RequestParam(defaultValue = "10") size: Int
-    ): ResponseEntity<ArticlePageResponse> {
-        val result = articleService.getArticleList(
-            page = page,
-            size = size
-        )
+    // 2026/10/29 - 게시글 검색 및 목록 조회로 인하여 비활성화
+    // @GetMapping
+    // fun getArticleList(
+    //     @RequestParam(defaultValue = "1") page: Int,
+    //     @RequestParam(defaultValue = "10") size: Int
+    // ): ResponseEntity<ArticlePageResponse> {
+    //     val result = articleService.getArticleList(
+    //         page = page,
+    //         size = size
+    //     )
 
-        return ResponseEntity.ok(result)
-    }
+    //     return ResponseEntity.ok(result)
+    // }
 
     @PostMapping
     fun createArticle(
