@@ -94,5 +94,11 @@ interface ArticleRepository : JpaRepository<ArticleEntity, Long>{
     fun findAllByDeletedAtIsNull(
         pageable: Pageable
     ): Page<ArticleEntity>
+
+    // 2026/10/29 - 제목에 검색어가 포함된 게시글을 찾음
+    fun findAllByDeletedAtIsNullAndTitleContainingIgnoreCase(
+        keyword: String,
+        pageable: Pageable
+    ): Page<ArticleEntity>
 }
 // 게시글 테이블에 접근하는 도구
