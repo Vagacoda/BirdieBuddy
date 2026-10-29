@@ -90,7 +90,8 @@ class ArticleService(
 
     fun getArticleList(
         page: Int,
-        size: Int
+        size: Int,
+        keyword: String? = null // 2026/10/29 - 게시글 검색
     ): ArticlePageResponse {
         // 잘못된 페이지 번호와 조회 개수 차단
         // 입력값 검사
