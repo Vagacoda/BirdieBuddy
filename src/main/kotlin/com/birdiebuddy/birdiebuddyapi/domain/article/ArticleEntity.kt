@@ -97,6 +97,9 @@ interface ArticleRepository : JpaRepository<ArticleEntity, Long>{
 
     // 2026/10/29 - 제목에 검색어가 포함된 게시글을 찾음
     fun findAllByDeletedAtIsNullAndTitleContainingIgnoreCase(
+        // DeletedAtIsNull : 삭제되지 않은 게시글만
+        // TitleContaining : 제목에 검색어가 포함된 글
+        // IgnoreCase : 영문 대소문자를 구분하지 않음
         keyword: String,
         pageable: Pageable
     ): Page<ArticleEntity>
