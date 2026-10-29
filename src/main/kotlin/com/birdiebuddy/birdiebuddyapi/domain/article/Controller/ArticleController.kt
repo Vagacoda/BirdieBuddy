@@ -90,6 +90,22 @@ class ArticleController(
         //200 OK 상태 코드와 함께 JSON으로 반환
     }
 
+    // 2026/10/29 - 게시글 검색
+    @GetMapping
+    fun getArticleList(
+        @RequestParam(defaultValue = "1") page: Int,
+        @RequestParam(defaultValue = "10") size: Int,
+        @RequestParam(required = false) keyword: String?
+    ): ResponseEntity<ArticlePageResponse> {
+        val result = articleService.getArticleList(
+            page = page,
+            size = size,
+            keyword = keyword
+        )
+
+        return ResponseEntity.ok(result)
+    }
+
     // 게시글 수정
     @PutMapping("/{articleId}") // Put(기존데이터 수정)요청을 받아서 다음 함수실행
     fun updateArticle(

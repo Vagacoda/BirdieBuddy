@@ -115,9 +115,30 @@ class ArticleService(
 
         // 해당 페이지의 게시글 조회
         // DB 조회 후 게시글 목록 변환
-        val articlePage = articleRepository
-            .findAllByDeletedAtIsNull(pageable)
+        // 게시글 검색 기능 추가로 인한 비활성화
+        // val articlePage = articleRepository
+        //       .findAllByDeletedAtIsNull(pageable)
 
+
+        // 2026/10/29 - 게시글 검색 기능
+        // 검색어 앞뒤 공백 제거
+        val searchKeyword = keyword?.trim()
+
+        val articlePage = if (searchKeyword.isNullOrBlank()) {
+            // isNullOrBlank
+            // null : 전체 목록 조회, "" 또는 "   " 역시 전체 목록 조회
+            // 검색어가 없으면 전체 목록을 페이지 단위로 조회
+            // "page" : 제목에 page가 포함된 글 조회
+            // "  page  " : 앞뒤 공백을 제거하고 page로 검색
+            articleRepository.findAllByDeletedAtIsNull(pageable)
+        } else {
+            // 검색어가 있으면 제목에 해당 단어가 포함된 글 조회
+            articleRepository
+                .findAllByDeletedAtIsNullAndTitleContainingIgnoreCase(
+                    searchKeyword,
+                    pageable
+                )
+        }
         // Entity 목록을 기존 목록 응답 형태로 변환
         // 해당 페이지의 글과 전체 글 수 등의 정보
         val articles = articlePage.content.map { article ->
