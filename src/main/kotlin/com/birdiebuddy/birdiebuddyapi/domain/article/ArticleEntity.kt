@@ -104,14 +104,31 @@ interface ArticleRepository : JpaRepository<ArticleEntity, Long>{
         pageable: Pageable
     ): Page<ArticleEntity>
 
+    // 2026/10/30 - 19:59
     // 특정 카테고리의 게시글 조회
     fun findAllByDeletedAtIsNullAndCategory(
+        // 삭제되지 않은 글 중 카테고리가 일치하는 글
+        // findAllBy + DeletedAt + IsNull + And + Category
+        // 목록 조회    삭제 시각    null인가   그리고  카테고리가 일치
         category: String,
         pageable: Pageable
     ): Page<ArticleEntity>
 
     // 특정 카테고리 안에서 제목 검색
     fun findAllByDeletedAtIsNullAndCategoryAndTitleContainingIgnoreCase(
+        category: String,
+        keyword: String,
+        pageable: Pageable
+    ): Page<ArticleEntity>
+
+    // 전체 카테고리에서 작성자 닉네임으로 검색
+    fun findAllByDeletedAtIsNullAndUser_NicknameContainingIgnoreCase(
+        keyword: String,
+        pageable: Pageable
+    ): Page<ArticleEntity>
+
+    // 특정 카테고리에서 작성자 닉네임으로 검색
+    fun findAllByDeletedAtIsNullAndCategoryAndUser_NicknameContainingIgnoreCase(
         category: String,
         keyword: String,
         pageable: Pageable
