@@ -92,18 +92,50 @@ class ArticleController(
     }
 
     // 2026/10/29 - 게시글 검색
+    // 로직 변경으로 인하여 비활성화
+//    @GetMapping
+//    fun getArticleList(
+//        @RequestParam(defaultValue = "1") page: Int,
+//        @RequestParam(defaultValue = "10") size: Int,
+//        @RequestParam(required = false) keyword: String?
+//    ): ResponseEntity<ArticlePageResponse> {
+//        val result = articleService.getArticleList(
+//            page = page,
+//            size = size,
+//            keyword = keyword
+//        )
+//
+//        return ResponseEntity.ok(result)
+//    }
+
     @GetMapping
     fun getArticleList(
+        // 생략하면 1페이지
         @RequestParam(defaultValue = "1") page: Int,
+
+        // 생략하면 한 페이지에 최대 10개
         @RequestParam(defaultValue = "10") size: Int,
-        @RequestParam(required = false) keyword: String?
+
+        // 검색창에 입력한 검색어, 생략 가능
+        @RequestParam(required = false) keyword: String?,
+
+        // 목록 위에서 선택한 카테고리, 생략하면 전체
+        @RequestParam(required = false) category: String?,
+
+        // 제목 또는 작성자 검색, 생략하면 제목 검색
+        @RequestParam(defaultValue = "TITLE") searchType: String
     ): ResponseEntity<ArticlePageResponse> {
+
+        // 요청에서 받은 조건들을 Service에 전달
         val result = articleService.getArticleList(
             page = page,
             size = size,
-            keyword = keyword
+            keyword = keyword,
+            category = category,
+            searchType = searchType
         )
 
+        // 조회 결과를 200 OK와 함께 반환
         return ResponseEntity.ok(result)
     }
 
