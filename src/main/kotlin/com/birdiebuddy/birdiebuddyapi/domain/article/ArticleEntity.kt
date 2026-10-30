@@ -103,5 +103,18 @@ interface ArticleRepository : JpaRepository<ArticleEntity, Long>{
         keyword: String,
         pageable: Pageable
     ): Page<ArticleEntity>
+
+    // 특정 카테고리의 게시글 조회
+    fun findAllByDeletedAtIsNullAndCategory(
+        category: String,
+        pageable: Pageable
+    ): Page<ArticleEntity>
+
+    // 특정 카테고리 안에서 제목 검색
+    fun findAllByDeletedAtIsNullAndCategoryAndTitleContainingIgnoreCase(
+        category: String,
+        keyword: String,
+        pageable: Pageable
+    ): Page<ArticleEntity>
 }
 // 게시글 테이블에 접근하는 도구
