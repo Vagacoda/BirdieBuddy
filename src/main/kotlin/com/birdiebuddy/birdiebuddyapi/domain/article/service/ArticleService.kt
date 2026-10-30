@@ -125,28 +125,28 @@ class ArticleService(
         // 2026/10/29 - 게시글 검색 기능
         // 검색어 앞뒤 공백 제거
         // 검색어 앞뒤 공백 제거
-// keyword가 null이면 trim()을 실행하지 않고 null 유지
-// 예: "  golf  " → "golf"
+    // keyword가 null이면 trim()을 실행하지 않고 null 유지
+    // 예: "  golf  " → "golf"
         val searchKeyword = keyword?.trim()
 
-// 카테고리 앞뒤 공백 제거
-// null 또는 빈 값이면 전체 카테고리를 조회할 예정
+    // 카테고리 앞뒤 공백 제거
+    // null 또는 빈 값이면 전체 카테고리를 조회할 예정
         val selectedCategory = category?.trim()
 
-// 검색 기준의 앞뒤 공백을 제거하고 대문자로 통일
-// 예: " title " → "TITLE"
+    // 검색 기준의 앞뒤 공백을 제거하고 대문자로 통일
+    // 예: " title " → "TITLE"
         val selectedSearchType = searchType.trim().uppercase()
 
-// 검색 기준은 TITLE(제목), AUTHOR(작성자)만 허용
-// 다른 값이면 IllegalArgumentException 발생
-// 기존 예외 처리 코드에서 400 Bad Request로 응답
+    // 검색 기준은 TITLE(제목), AUTHOR(작성자)만 허용
+    // 다른 값이면 IllegalArgumentException 발생
+    // 기존 예외 처리 코드에서 400 Bad Request로 응답
         require(selectedSearchType in listOf("TITLE", "AUTHOR")) {
             "검색 기준은 TITLE 또는 AUTHOR여야 합니다."
         }
 
-// when은 위에서부터 조건을 확인하고
-// 처음 만족하는 분기 하나만 실행
-// 선택된 분기의 조회 결과를 articlePage에 저장
+    // when은 위에서부터 조건을 확인하고
+    // 처음 만족하는 분기 하나만 실행
+    // 선택된 분기의 조회 결과를 articlePage에 저장
         val articlePage = when {
 
             // 1. 검색어가 null, 빈 문자열, 공백이면 검색 없이 목록 조회
