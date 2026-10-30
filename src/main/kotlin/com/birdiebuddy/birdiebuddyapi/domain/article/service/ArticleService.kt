@@ -91,7 +91,9 @@ class ArticleService(
     fun getArticleList(
         page: Int,
         size: Int,
-        keyword: String? = null // 2026/10/29 - 게시글 검색
+        keyword: String? = null, // 2026/10/29 - 게시글 검색
+        category: String? = null,
+        searchType: String = "TITLE"
     ): ArticlePageResponse {
         // 잘못된 페이지 번호와 조회 개수 차단
         // 입력값 검사
@@ -122,23 +124,98 @@ class ArticleService(
 
         // 2026/10/29 - 게시글 검색 기능
         // 검색어 앞뒤 공백 제거
+        // 검색어 앞뒤 공백 제거
+// keyword가 null이면 trim()을 실행하지 않고 null 유지
+// 예: "  golf  " → "golf"
         val searchKeyword = keyword?.trim()
 
-        val articlePage = if (searchKeyword.isNullOrBlank()) {
-            // isNullOrBlank
-            // null : 전체 목록 조회, "" 또는 "   " 역시 전체 목록 조회
-            // 검색어가 없으면 전체 목록을 페이지 단위로 조회
-            // "page" : 제목에 page가 포함된 글 조회
-            // "  page  " : 앞뒤 공백을 제거하고 page로 검색
-            articleRepository.findAllByDeletedAtIsNull(pageable)
-        } else {
-            // 검색어가 있으면 제목에 해당 단어가 포함된 글 조회
-            articleRepository
-                .findAllByDeletedAtIsNullAndTitleContainingIgnoreCase(
-                    searchKeyword,
-                    pageable
-                )
+// 카테고리 앞뒤 공백 제거
+// null 또는 빈 값이면 전체 카테고리를 조회할 예정
+        val selectedCategory = category?.trim()
+
+// 검색 기준의 앞뒤 공백을 제거하고 대문자로 통일
+// 예: " title " → "TITLE"
+        val selectedSearchType = searchType.trim().uppercase()
+
+// 검색 기준은 TITLE(제목), AUTHOR(작성자)만 허용
+// 다른 값이면 IllegalArgumentException 발생
+// 기존 예외 처리 코드에서 400 Bad Request로 응답
+        require(selectedSearchType in listOf("TITLE", "AUTHOR")) {
+            "검색 기준은 TITLE 또는 AUTHOR여야 합니다."
         }
+
+// when은 위에서부터 조건을 확인하고
+// 처음 만족하는 분기 하나만 실행
+// 선택된 분기의 조회 결과를 articlePage에 저장
+        val articlePage = when {
+
+            // 1. 검색어가 null, 빈 문자열, 공백이면 검색 없이 목록 조회
+            searchKeyword.isNullOrBlank() -> {
+
+                // 카테고리도 선택하지 않았다면 전체 카테고리의 글 조회
+                if (selectedCategory.isNullOrBlank()) {
+                    articleRepository.findAllByDeletedAtIsNull(pageable)
+                } else {
+                    // 카테고리가 있으면 해당 카테고리의 글만 조회
+                    // 예: "FREE" → 자유글 목록
+                    articleRepository.findAllByDeletedAtIsNullAndCategory(
+                        selectedCategory,
+                        pageable
+                    )
+                }
+            }
+
+            // 2. 검색어가 있고, 검색 기준이 제목인 경우
+            selectedSearchType == "TITLE" -> {
+
+                // 카테고리를 선택하지 않았다면 전체 글에서 제목 검색
+                if (selectedCategory.isNullOrBlank()) {
+                    articleRepository
+                        .findAllByDeletedAtIsNullAndTitleContainingIgnoreCase(
+                            searchKeyword,
+                            pageable
+                        )
+                } else {
+                    // 선택한 카테고리 안에서 제목 검색
+                    // 예: 자유글 중 제목에 "golf"가 포함된 글
+                    articleRepository
+                        .findAllByDeletedAtIsNullAndCategoryAndTitleContainingIgnoreCase(
+                            selectedCategory,
+                            searchKeyword,
+                            pageable
+                        )
+                }
+            }
+
+            // 3. 검색어가 있고, 검색 기준이 작성자인 경우
+            // 위에서 TITLE과 AUTHOR만 허용했으므로
+            // TITLE이 아닌 이 분기는 AUTHOR에 해당
+            else -> {
+
+                // 전체 카테고리에서 작성자 닉네임 검색
+                // User_Nickname은 article.user.nickname을 의미
+                if (selectedCategory.isNullOrBlank()) {
+                    articleRepository
+                        .findAllByDeletedAtIsNullAndUser_NicknameContainingIgnoreCase(
+                            searchKeyword,
+                            pageable
+                        )
+                } else {
+                    // 선택한 카테고리 안에서 작성자 닉네임 검색
+                    // 예: 자유글 중 작성자 닉네임에 "user"가 포함된 글
+                    articleRepository
+                        .findAllByDeletedAtIsNullAndCategoryAndUser_NicknameContainingIgnoreCase(
+                            selectedCategory,
+                            searchKeyword,
+                            pageable
+                        )
+                }
+            }
+        }
+
+        // 모든 조회 함수는 삭제되지 않은 글만 대상으로 함
+        // pageable에는 페이지 번호, 조회 개수, 정렬 조건이 들어 있음
+        // 아래의 기존 map 변환과 ArticlePageResponse 반환 코드는 유지
         // Entity 목록을 기존 목록 응답 형태로 변환
         // 해당 페이지의 글과 전체 글 수 등의 정보
         val articles = articlePage.content.map { article ->
