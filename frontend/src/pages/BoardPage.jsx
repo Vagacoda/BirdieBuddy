@@ -69,7 +69,10 @@ function BoardPage() {
                         <tbody>
                         {articles.map((article) => (
                             <tr key={article.id}>
+                                {/* 첫 번째 칸: 게시글 번호 */}
                                 <td>{article.id}</td>
+
+                                {/* 두 번째 칸: 카테고리 */}
                                 <td>
                                     {article.category === 'FREE'
                                         ? '자유'
@@ -77,8 +80,18 @@ function BoardPage() {
                                             ? '질문'
                                             : article.category}
                                 </td>
-                                <td>{article.title}</td>
+
+                                {/* 세 번째 칸: 제목을 클릭하면 상세 화면 이동 */}
+                                <td>
+                                    <Link to={`/board/${article.id}`}>
+                                        {article.title}
+                                    </Link>
+                                </td>
+
+                                {/* 네 번째 칸: 작성자 */}
                                 <td>{article.authorNickname}</td>
+
+                                {/* 다섯 번째 칸: 조회수 */}
                                 <td>{article.viewCount}</td>
                             </tr>
                         ))}
