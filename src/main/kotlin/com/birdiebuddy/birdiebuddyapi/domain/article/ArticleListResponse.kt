@@ -10,8 +10,8 @@ data class ArticleListResponse(
     val type: String,
     val category: String,
     val title: String,
+    val authorId: Long, // 작성자 상세페이지 이동에 사용할 회원 ID
     val authorNickname: String,
     val viewCount: Int,
     val createdAt: LocalDateTime
-    // 추후 추천수, 댓글수도 추가 예정
 )
