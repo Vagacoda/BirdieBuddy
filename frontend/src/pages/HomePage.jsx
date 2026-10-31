@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import '../App.css'
 
 function HomePage() {
@@ -58,6 +59,7 @@ function HomePage() {
                     <section className="panel board-panel">
                         <div className="panel-heading">
                             <h2>게시판</h2>
+                            <Link to="/board">더 보기</Link>
                         </div>
 
                         {loading && <p>게시글을 불러오는 중입니다.</p>}
