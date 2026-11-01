@@ -170,5 +170,10 @@ interface ArticleRepository : JpaRepository<ArticleEntity, Long>{
     fun findForViewCount(
         @Param("articleId") articleId: Long
     ): ArticleEntity?
+
+    fun findAllByDeletedAtIsNullAndUser_Id(
+        userId: Long,
+        pageable: Pageable
+    ): Page<ArticleEntity>
 }
 // 게시글 테이블에 접근하는 도구
