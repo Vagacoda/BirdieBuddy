@@ -1,0 +1,69 @@
+/* 크기를 계산할 때 테두리와 안쪽 여백도 포함 */
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  font-family: Arial, "Malgun Gothic", sans-serif;
+  color: #24332b;
+  background: #f5f7f5;
+  font-synthesis: none;
+  line-height: 1.6;
+}
+
+body {
+  margin: 0;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+h1 {
+  font-size: 28px;
+}
+
+h2 {
+  font-size: 20px;
+}
+
+a {
+  color: #246743;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid #39885c;
+  outline-offset: 3px;
+}
+
+[role="alert"] {
+  color: #b42318;
+}

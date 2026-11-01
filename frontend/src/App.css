@@ -1,3 +1,9 @@
+.site-header {
+  background: #ffffff;
+  border-bottom: 2px solid #246743;
+  padding: 24px max(20px, calc((100% - 1200px) / 2));
+}
+
 .counter {
   font-size: 16px;
   padding: 5px 10px;
