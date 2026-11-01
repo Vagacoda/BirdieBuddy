@@ -13,6 +13,8 @@ import jakarta.persistence.PreUpdate
 import jakarta.persistence.Table
 import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDateTime
+// 2026/11/01 - 20:31
+import jakarta.persistence.Version
 
 // 2026/09/17 - 20:12 UserEntity 생성
 @Entity
@@ -39,6 +41,16 @@ class UserEntity(
     @Column(name = "password_hash", nullable = false, length = 255)
     var passwordHash: String = "",
     // 회원가입 시 Spring Security 해시값.
+
+    // 비밀번호 변경 등으로 기존 로그인 토큰을 무효화할 때 증가
+    @Column(name = "token_version", nullable = false)
+    var tokenVersion: Long = 0,
+
+    // JPA가 회원 정보 수정 충돌을 감지하기 위해 관리
+    // 직접 값을 변경하지 않음
+    @Version
+    @Column(name = "row_version", nullable = false)
+    var rowVersion: Long = 0,
 
     @Column(nullable = false, length = 20)
     var status: String = "ACTIVE",

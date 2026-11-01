@@ -1,10 +1,14 @@
 package com.birdiebuddy.birdiebuddyapi.domain.user.controller
 
 import com.birdiebuddy.birdiebuddyapi.domain.user.MyInfoResponse
+import com.birdiebuddy.birdiebuddyapi.domain.user.NicknameUpdateRequest
 import com.birdiebuddy.birdiebuddyapi.domain.user.service.UserService
+import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -14,15 +18,25 @@ class UserController(
     private val userService: UserService
 ) {
 
-    // GET /api/users/me
-    // 현재 로그인한 회원 자신의 정보를 조회
     @GetMapping("/me")
     fun getMyInfo(
-        // JWT 필터에서 인증한 회원 ID를 받음
-        // 사용자가 직접 입력한 ID를 사용하는 것이 아님
         @AuthenticationPrincipal userId: Long
     ): ResponseEntity<MyInfoResponse> {
-        val result = userService.getMyInfo(userId)
+        return ResponseEntity.ok(
+            userService.getMyInfo(userId)
+        )
+    }
+
+    // 로그인한 본인의 닉네임 변경
+    @PatchMapping("/me/nickname")
+    fun updateNickname(
+        @AuthenticationPrincipal userId: Long,
+        @Valid @RequestBody request: NicknameUpdateRequest
+    ): ResponseEntity<MyInfoResponse> {
+        val result = userService.updateNickname(
+            userId = userId,
+            request = request
+        )
 
         return ResponseEntity.ok(result)
     }
