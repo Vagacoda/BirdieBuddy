@@ -19,6 +19,9 @@ import java.time.LocalDateTime
 import com.birdiebuddy.birdiebuddyapi.domain.article.ArticlePageResponse
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
+//2026/11/01 - 20:01
+import com.birdiebuddy.birdiebuddyapi.domain.article.ArticleViewRecordEntity
+import com.birdiebuddy.birdiebuddyapi.domain.article.ArticleViewRecordRepository
 
 // 2026/10/08 - 21:44
 // ArticleService
@@ -27,7 +30,8 @@ import org.springframework.data.domain.Sort
 @Transactional
 class ArticleService(
     private val articleRepository: ArticleRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val articleViewRecordRepository: ArticleViewRecordRepository
 ) {
     fun createArticle(
         userId: Long, // userId: JWT 인증을 통과한 로그인 회원의 ID
@@ -251,29 +255,100 @@ class ArticleService(
         )
     }
 
-    fun getArticleDetail(articleId: Long): ArticleDetailResponse {
-        // DB에서 조회수만 증가
-        // 기존 클래스의 @Transactional 안에서 실행됨
-        val updatedCount = articleRepository.increaseViewCount(articleId)
+    // 게시글 조회수 합산방식 변경으로 인하여 주석처리
+//    fun getArticleDetail(articleId: Long): ArticleDetailResponse {
+//        // DB에서 조회수만 증가
+//        // 기존 클래스의 @Transactional 안에서 실행됨
+//        val updatedCount = articleRepository.increaseViewCount(articleId)
+//
+//        // 존재하지 않거나 삭제된 게시글은 수정된 행이 0개
+//        if (updatedCount == 0) {
+//            throw ResponseStatusException(
+//                HttpStatus.NOT_FOUND,
+//                "존재하지 않거나 삭제된 게시글입니다."
+//            )
+//        }
+//
+//        // 조회수를 증가시킨 후 최신 정보를 가져옴
+//        val article = articleRepository
+//            .findByIdAndDeletedAtIsNull(articleId)
+//            ?: throw ResponseStatusException(
+//                HttpStatus.NOT_FOUND,
+//                "존재하지 않거나 삭제된 게시글입니다."
+//            )
+//
+//        // 기존 article.viewCount += 1 코드는 삭제
+//        // 위에서 이미 증가시켰으므로 여기서 또 올리면 안 됨
+//
+//        val user = article.user
+//            ?: throw IllegalStateException("게시글 작성자 정보가 없습니다.")
+//
+//        return ArticleDetailResponse(
+//            id = article.id
+//                ?: throw IllegalStateException("게시글 ID가 없습니다."),
+//            type = article.type,
+//            category = article.category,
+//            title = article.title,
+//            content = article.content,
+//            authorNickname = user.nickname,
+//            viewCount = article.viewCount,
+//            createdAt = article.createdAt,
+//            updatedAt = article.updatedAt
+//        )
+//    }
 
-        // 존재하지 않거나 삭제된 게시글은 수정된 행이 0개
-        if (updatedCount == 0) {
-            throw ResponseStatusException(
-                HttpStatus.NOT_FOUND,
-                "존재하지 않거나 삭제된 게시글입니다."
-            )
+    fun getArticleDetail(
+        articleId: Long,
+        visitorId: String?
+    ): ArticleDetailResponse {
+        // 방문자 ID가 있을 때만 조회수를 집계
+        // ID 없이 API를 직접 열면 내용만 조회
+        if (visitorId != null) {
+            // 이 글의 중복 조회 판단과 증가 처리를 순서대로 실행
+            articleRepository.findForViewCount(articleId)
+                ?: throw ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "존재하지 않거나 삭제된 게시글입니다."
+                )
+
+            val now = LocalDateTime.now()
+
+            val record = articleViewRecordRepository
+                .findByArticleIdAndVisitorId(articleId, visitorId)
+
+            // 처음 조회하거나 마지막 집계 이후 30분이 지났다면 증가
+            val shouldCount = record == null ||
+                    !record.lastCountedAt.plusMinutes(30).isAfter(now)
+
+            if (shouldCount) {
+                if (record == null) {
+                    // 해당 방문자의 첫 조회 기록
+                    articleViewRecordRepository.save(
+                        ArticleViewRecordEntity(
+                            articleId = articleId,
+                            visitorId = visitorId,
+                            lastCountedAt = now
+                        )
+                    )
+                } else {
+                    // 기존 기록의 집계 시각 갱신
+                    record.lastCountedAt = now
+                }
+
+                // 앞서 만든 DB 조회수 증가 함수
+                // flushAutomatically=true로 조회 기록도 먼저 반영
+                // 전체 작업은 같은 트랜잭션이므로 실패하면 함께 취소
+                articleRepository.increaseViewCount(articleId)
+            }
         }
 
-        // 조회수를 증가시킨 후 최신 정보를 가져옴
+        // 조회수 처리 후 응답할 게시글 정보 조회
         val article = articleRepository
             .findByIdAndDeletedAtIsNull(articleId)
             ?: throw ResponseStatusException(
                 HttpStatus.NOT_FOUND,
                 "존재하지 않거나 삭제된 게시글입니다."
             )
-
-        // 기존 article.viewCount += 1 코드는 삭제
-        // 위에서 이미 증가시켰으므로 여기서 또 올리면 안 됨
 
         val user = article.user
             ?: throw IllegalStateException("게시글 작성자 정보가 없습니다.")
@@ -291,6 +366,8 @@ class ArticleService(
             updatedAt = article.updatedAt
         )
     }
+
+
     // 2026/10/24 - 게시글 수정 서비스
     fun updateArticle(
         articleId: Long, //어떤 게시글 수정할지
@@ -353,3 +430,4 @@ class ArticleService(
         article.deletedAt = LocalDateTime.now()
     }
 }
+

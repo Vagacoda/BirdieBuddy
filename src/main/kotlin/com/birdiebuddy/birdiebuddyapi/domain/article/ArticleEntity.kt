@@ -20,6 +20,8 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
+import jakarta.persistence.LockModeType
+import org.springframework.data.jpa.repository.Lock
 
 // 2026/10/08 - 20:52
 
@@ -153,5 +155,20 @@ interface ArticleRepository : JpaRepository<ArticleEntity, Long>{
     fun increaseViewCount(
         @Param("articleId") articleId: Long
     ): Int
+
+    // 같은 게시글의 조회수 처리를 순서대로 실행하기 위한 잠금
+    // 트랜잭션이 끝나면 DB가 잠금을 해제함
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query(
+        """
+    select a
+    from ArticleEntity a
+    where a.id = :articleId
+      and a.deletedAt is null
+    """
+    )
+    fun findForViewCount(
+        @Param("articleId") articleId: Long
+    ): ArticleEntity?
 }
 // 게시글 테이블에 접근하는 도구
