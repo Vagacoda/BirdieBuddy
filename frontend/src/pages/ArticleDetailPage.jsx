@@ -1,6 +1,19 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 
+// 같은 브라우저에서 재사용할 방문자 ID
+function getVisitorId() {
+    const key = 'birdiebuddy.visitorId'
+    let visitorId = localStorage.getItem(key)
+
+    if (!visitorId) {
+        visitorId = crypto.randomUUID()
+        localStorage.setItem(key, visitorId)
+    }
+
+    return visitorId
+}
+
 function ArticleDetailPage() {
     // /board/6에서 게시글 번호 6을 가져옴
     const { articleId } = useParams()
@@ -13,7 +26,11 @@ function ArticleDetailPage() {
 
         async function loadArticle() {
             try {
-                const response = await fetch(`/api/articles/${articleId}`)
+                const response = await fetch(`/api/articles/${articleId}`, {
+                    headers: {
+                        'X-Visitor-Id': getVisitorId(),
+                    },
+                })
 
                 if (response.status === 404) {
                     throw new Error('존재하지 않거나 삭제된 게시글입니다.')

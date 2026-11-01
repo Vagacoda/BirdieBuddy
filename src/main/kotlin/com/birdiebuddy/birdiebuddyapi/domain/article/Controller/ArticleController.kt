@@ -22,6 +22,11 @@ import org.springframework.web.bind.annotation.DeleteMapping
 // 2026/10/27 - 23:18
 import com.birdiebuddy.birdiebuddyapi.domain.article.ArticlePageResponse
 import org.springframework.web.bind.annotation.RequestParam
+// 2026/11/01 - 20:04
+import org.springframework.web.bind.annotation.RequestHeader
+import org.springframework.web.server.ResponseStatusException
+import java.util.UUID
+
 
 // 2026/10/08 - 22:23
 // ArticleController
@@ -72,23 +77,67 @@ class ArticleController(
     }
 
     // 상세조회
+    // 게시글 조회수 합산방식 변경으로 인하여 주석처리
+//    @GetMapping("/{articleId}")
+//    fun getArticleDetail(
+//        @PathVariable articleId: Long
+//        // 게시글 번호를 함수 변수로 받음
+//        // URL 경로의 값을 가져오라는 뜻
+//        // GET /api/articles/1
+//        // → URL의 1을 꺼냄
+//        // → articleId: Long에 1 저장
+//    ): ResponseEntity<ArticleDetailResponse> {
+//        // 상세 게시글 한 건을 HTTP 응답으로 반환
+//        // ResponseEntity: 상태 코드와 응답 본문을 함께 반환
+//        // ArticleDetailResponse: 제목, 본문, 작성자, 조회 수, 작성·수정 시각을 담은 상세 정보
+//        val article = articleService.getArticleDetail(articleId)
+//        // articleService가 DB조회 하도록 함
+//
+//        return ResponseEntity.ok(article)
+//        //200 OK 상태 코드와 함께 JSON으로 반환
+//    }
+
     @GetMapping("/{articleId}")
     fun getArticleDetail(
-        @PathVariable articleId: Long
-        // 게시글 번호를 함수 변수로 받음
-        // URL 경로의 값을 가져오라는 뜻
-        // GET /api/articles/1
-        // → URL의 1을 꺼냄
-        // → articleId: Long에 1 저장
-    ): ResponseEntity<ArticleDetailResponse> {
-        // 상세 게시글 한 건을 HTTP 응답으로 반환
-        // ResponseEntity: 상태 코드와 응답 본문을 함께 반환
-        // ArticleDetailResponse: 제목, 본문, 작성자, 조회 수, 작성·수정 시각을 담은 상세 정보
-        val article = articleService.getArticleDetail(articleId)
-        // articleService가 DB조회 하도록 함
+        @PathVariable articleId: Long,
 
-        return ResponseEntity.ok(article)
-        //200 OK 상태 코드와 함께 JSON으로 반환
+        // 프론트가 전달한 브라우저 방문자 ID
+        @RequestHeader(
+            name = "X-Visitor-Id",
+            required = false
+        )
+        visitorId: String?
+    ): ResponseEntity<ArticleDetailResponse> {
+
+        // 저장할 값은 표준 UUID 형식만 허용
+        val normalizedVisitorId = visitorId?.let { value ->
+            val parsed = try {
+                UUID.fromString(value)
+            } catch (exception: IllegalArgumentException) {
+                throw ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "방문자 ID 형식이 올바르지 않습니다."
+                )
+            }
+
+            if (!parsed.toString().equals(value, ignoreCase = true)) {
+                throw ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "방문자 ID 형식이 올바르지 않습니다."
+                )
+            }
+
+            parsed.toString()
+        }
+
+        val article = articleService.getArticleDetail(
+            articleId = articleId,
+            visitorId = normalizedVisitorId
+        )
+
+        return ResponseEntity.ok()
+            .header("Cache-Control", "no-store")
+            .body(article)
     }
 
     // 2026/10/29 - 게시글 검색
