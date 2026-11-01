@@ -9,11 +9,15 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.server.ResponseStatusException
+// 2026/11/01 - 20:35
+import com.birdiebuddy.birdiebuddyapi.domain.user.PasswordUpdateRequest
+import org.springframework.security.crypto.password.PasswordEncoder
 
 @Service
 @Transactional(readOnly = true)
 class UserService(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val passwordEncoder: PasswordEncoder
 ) {
 
     // 기존 내 정보 조회
@@ -98,6 +102,51 @@ class UserService(
         return user
     }
 
+    @Transactional
+    fun updatePassword(
+        userId: Long,
+        request: PasswordUpdateRequest
+    ) {
+        // 기존에 만든 공통 회원 상태 검사 함수
+        val user = findActiveUser(userId)
+
+        // 현재 비밀번호가 맞아야 변경 가능
+        require(
+            passwordEncoder.matches(
+                request.currentPassword,
+                user.passwordHash
+            )
+        ) {
+            "현재 비밀번호가 일치하지 않습니다."
+        }
+
+        // 같은 비밀번호로 변경하는 것은 차단
+        require(
+            !passwordEncoder.matches(
+                request.newPassword,
+                user.passwordHash
+            )
+        ) {
+            "새 비밀번호는 현재 비밀번호와 달라야 합니다."
+        }
+
+        // 새 비밀번호를 해시로 변환
+        // 결과가 null이면 저장하지 않고 예외 발생
+        val newPasswordHash = passwordEncoder.encode(request.newPassword)
+            ?: throw IllegalStateException("비밀번호 해시 생성에 실패했습니다.")
+
+        // null이 아닌 해시값을 회원 정보에 저장
+        user.passwordHash = newPasswordHash
+
+        // 기존 JWT에 담긴 버전과 달라지므로
+        // 변경 전에 발급한 토큰은 이후 인증에서 거부됨
+        user.tokenVersion += 1
+
+        // 비밀번호와 토큰 버전을 같은 트랜잭션에서 반영
+        // 동시 수정 충돌이 있으면 @Version으로 감지
+        userRepository.flush()
+    }
+
     // 응답에는 필요한 정보만 담음
     private fun toMyInfoResponse(user: UserEntity): MyInfoResponse {
         return MyInfoResponse(
@@ -108,3 +157,4 @@ class UserService(
         )
     }
 }
+

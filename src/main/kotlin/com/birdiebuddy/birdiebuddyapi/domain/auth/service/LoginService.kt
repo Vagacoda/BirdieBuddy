@@ -27,7 +27,7 @@ class LoginService (
             throw IllegalArgumentException("이메일 인증이 완룓히지 않았습니다.")
         }
 
-        if(user.status != "ACTIVE"){
+        if (user.deletedAt != null || user.status != "ACTIVE") {
             throw IllegalArgumentException("로그인할 수 없는 계정입니다.")
         }
 
@@ -42,7 +42,10 @@ class LoginService (
             ?: throw IllegalStateException("회원 ID가 존재하지 않습니다.")
         // DB에서 찾은 회원의 ID를 꺼냄, 없으면 예외처라
 
-        return jwtService.createAccessToken(userId)
+        return jwtService.createAccessToken(
+            userId = userId,
+            tokenVersion = user.tokenVersion
+        )
         // 회원 ID를 JWT 안의 subject에 넣음
     }
 }

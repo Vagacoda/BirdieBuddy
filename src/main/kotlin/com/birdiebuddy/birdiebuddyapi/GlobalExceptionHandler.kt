@@ -4,6 +4,9 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
+// 2026/11/01 - 20:40
+import org.springframework.dao.OptimisticLockingFailureException
+import org.springframework.http.HttpStatus
 
 
 // 2026/09/25 - 19:28 전역 예외 처리 추가
@@ -33,6 +36,18 @@ class GlobalExceptionHandler {
             // 검증에 실패한 항목들 중 첫 번째 오류 메시지를 가져옴
         return ResponseEntity.badRequest().body(
             mapOf("message" to message)
+        )
+    }
+
+    @ExceptionHandler(OptimisticLockingFailureException::class)
+    fun handleConcurrentUpdate(
+        exception: OptimisticLockingFailureException
+    ): ResponseEntity<Map<String, String>> {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(
+            mapOf(
+                "message" to
+                        "다른 요청에서 회원 정보가 변경되었습니다. 다시 로그인한 후 시도해 주세요."
+            )
         )
     }
 }

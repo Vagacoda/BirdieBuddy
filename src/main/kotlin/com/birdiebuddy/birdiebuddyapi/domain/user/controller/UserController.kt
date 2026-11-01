@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+// 2026/11/01 = 20:38
+import com.birdiebuddy.birdiebuddyapi.domain.user.PasswordUpdateRequest
 
 @RestController
 @RequestMapping("/api/users")
@@ -39,5 +41,22 @@ class UserController(
         )
 
         return ResponseEntity.ok(result)
+    }
+
+    @PatchMapping("/me/password")
+    fun updatePassword(
+        @AuthenticationPrincipal userId: Long,
+        @Valid @RequestBody request: PasswordUpdateRequest
+    ): ResponseEntity<Map<String, String>> {
+        userService.updatePassword(
+            userId = userId,
+            request = request
+        )
+
+        return ResponseEntity.ok(
+            mapOf(
+                "message" to "비밀번호가 변경되었습니다. 다시 로그인해 주세요."
+            )
+        )
     }
 }
