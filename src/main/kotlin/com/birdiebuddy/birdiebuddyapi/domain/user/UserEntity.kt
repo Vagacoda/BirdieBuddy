@@ -79,4 +79,11 @@ interface UserRepository : JpaRepository<UserEntity, Long> {
     // 이메일 회원 한명의 전체정보 조회
     fun findByEmail(email: String): UserEntity?
     // 회원이 있으면 UserEntity 객체 반환, 아니면 null반환
+
+    // 다른 회원이 해당 닉네임을 사용 중인지 확인
+    // 내 ID는 제외하므로 현재 닉네임을 그대로 보내도 중복으로 판단하지 않음
+    fun existsByNicknameAndIdNot(
+        nickname: String,
+        id: Long
+    ): Boolean
 }

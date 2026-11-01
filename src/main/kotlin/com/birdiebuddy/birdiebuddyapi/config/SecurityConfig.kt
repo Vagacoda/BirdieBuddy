@@ -66,7 +66,7 @@ class SecurityConfig (
                 auth.requestMatchers(
                     HttpMethod.GET,
                     "/api/articles",
-                    "/api/articles/**"
+                    "/api/articles/**",
                 ).permitAll()
                 auth.requestMatchers(
                     "/api/users",
@@ -74,6 +74,19 @@ class SecurityConfig (
                     "/api/auth/email-verifications/confirm",
                     "/api/auth/email-verifications/send",
                     "/api/auth/login").permitAll()
+                // 내 정보는 반드시 로그인해야 조회 가능
+                // 아래의 /api/users/* 규칙보다 먼저 선언해야 함
+                auth.requestMatchers(
+                    HttpMethod.GET,
+                    "/api/users/me"
+                ).authenticated()
+
+                // 공개 프로필과 작성글 목록은 비로그인 사용자도 조회 가능
+                auth.requestMatchers(
+                    HttpMethod.GET,
+                    "/api/users/*",
+                    "/api/users/*/articles"
+                ).permitAll()
                 // /api/users(회원가입 API주소) 는 비회원도 접근 가능.
                 auth.anyRequest().authenticated()
                 // 그 외 모든 주소는 JWT 등으로 로그인 인증을 통과한 회원만 접근가능.
