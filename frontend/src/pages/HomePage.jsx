@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import UserDashboard from '../components/UserDashboard.jsx'
 import '../App.css'
 
 function HomePage() {
@@ -118,10 +119,7 @@ function HomePage() {
                         )}
                     </section>
 
-                    <aside className="panel user-panel">
-                        <h2>유저 대시보드</h2>
-                        <p>회원 정보 영역을 준비 중입니다.</p>
-                    </aside>
+                    <UserDashboard />
                 </div>
 
                 {/* 두 번째 줄: 지도 + 골프장 목록 */}

@@ -205,3 +205,139 @@
     padding: 18px;
   }
 }
+
+/* 게시판 카테고리와 페이지 이동 */
+.board-categories,
+.board-pagination {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.board-categories {
+  margin-bottom: 20px;
+}
+
+.board-page button,
+.board-search select,
+.board-search input {
+  min-height: 40px;
+  padding: 8px 14px;
+  border: 1px solid #ccd9cf;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #24332b;
+}
+
+.board-page button:hover:not(:disabled) {
+  background: #edf3ed;
+}
+
+.board-categories button[aria-pressed="true"] {
+  background: #246743;
+  border-color: #246743;
+  color: #ffffff;
+}
+
+.board-categories button[aria-pressed="true"]:hover {
+  background: #1d5537;
+}
+
+.board-page button:disabled {
+  opacity: 0.45;
+}
+
+.board-count {
+  margin-bottom: 12px;
+  color: #66756b;
+  font-size: 14px;
+}
+
+/* 목록 아래 검색창 */
+.board-search {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.board-search input {
+  flex: 1;
+  min-width: 0;
+  max-width: 360px;
+}
+
+.board-pagination {
+  justify-content: center;
+  margin-top: 20px;
+}
+
+@media (max-width: 600px) {
+  .board-search {
+    flex-wrap: wrap;
+  }
+
+  .board-search input {
+    max-width: none;
+  }
+}
+
+/* 로그인 입력 영역 */
+.dashboard-login {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dashboard-login label {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.dashboard-login input {
+  width: 100%;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid #ccd9cf;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #24332b;
+}
+
+.user-panel button {
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 6px;
+  background: #246743;
+  color: #ffffff;
+}
+
+.user-panel button:hover:not(:disabled) {
+  background: #1d5537;
+}
+
+.user-panel button:disabled {
+  opacity: 0.6;
+}
+
+.dashboard-login button {
+  margin-top: 8px;
+}
+
+/* 로그인 후 내 정보 */
+.dashboard-profile {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.dashboard-email {
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.user-panel .dashboard-error {
+  margin-top: 14px;
+  color: #b42318;
+  font-size: 14px;
+}
