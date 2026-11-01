@@ -16,6 +16,10 @@ import java.time.LocalDateTime
 // 2026/10/27
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+// 2026/11/01
+import org.springframework.data.jpa.repository.Modifying
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 
 // 2026/10/08 - 20:52
 
@@ -133,5 +137,21 @@ interface ArticleRepository : JpaRepository<ArticleEntity, Long>{
         keyword: String,
         pageable: Pageable
     ): Page<ArticleEntity>
+
+    @Modifying(
+        flushAutomatically = true,
+        clearAutomatically = true
+    )
+    @Query(
+        """
+    update ArticleEntity a
+    set a.viewCount = a.viewCount + 1
+    where a.id = :articleId
+      and a.deletedAt is null
+    """
+    )
+    fun increaseViewCount(
+        @Param("articleId") articleId: Long
+    ): Int
 }
 // 게시글 테이블에 접근하는 도구

@@ -252,37 +252,43 @@ class ArticleService(
     }
 
     fun getArticleDetail(articleId: Long): ArticleDetailResponse {
-        // 게시글 ID를 받아서 글 한 건의 상세 정보를 반환
+        // DB에서 조회수만 증가
+        // 기존 클래스의 @Transactional 안에서 실행됨
+        val updatedCount = articleRepository.increaseViewCount(articleId)
+
+        // 존재하지 않거나 삭제된 게시글은 수정된 행이 0개
+        if (updatedCount == 0) {
+            throw ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "존재하지 않거나 삭제된 게시글입니다."
+            )
+        }
+
+        // 조회수를 증가시킨 후 최신 정보를 가져옴
         val article = articleRepository
             .findByIdAndDeletedAtIsNull(articleId)
             ?: throw ResponseStatusException(
                 HttpStatus.NOT_FOUND,
                 "존재하지 않거나 삭제된 게시글입니다."
             )
-        // findByIdAndDeletedAtIsNull()은 글이 없으면 null을 반환
 
-        article.viewCount += 1
-        // 조회수 올라감
+        // 기존 article.viewCount += 1 코드는 삭제
+        // 위에서 이미 증가시켰으므로 여기서 또 올리면 안 됨
 
         val user = article.user
             ?: throw IllegalStateException("게시글 작성자 정보가 없습니다.")
-        // 게시글 작성자 정보를 가져옴
 
         return ArticleDetailResponse(
             id = article.id
                 ?: throw IllegalStateException("게시글 ID가 없습니다."),
-            // ID가 없다면 예외처리
             type = article.type,
             category = article.category,
             title = article.title,
             content = article.content,
-            // 여기까지가 기본 데이터
             authorNickname = user.nickname,
-            // 유저 별명
             viewCount = article.viewCount,
             createdAt = article.createdAt,
             updatedAt = article.updatedAt
-            // 각종 시각들
         )
     }
     // 2026/10/24 - 게시글 수정 서비스
