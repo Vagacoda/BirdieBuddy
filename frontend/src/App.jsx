@@ -2,6 +2,7 @@ import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
 import HomePage from './pages/HomePage.jsx'
 import BoardPage from './pages/BoardPage.jsx'
 import ArticleDetailPage from './pages/ArticleDetailPage.jsx'
+import ArticleCreatePage from './pages/ArticleCreatePage.jsx'
 
 function App() {
     return (
@@ -11,7 +12,10 @@ function App() {
 
                 <Route path="/board" element={<BoardPage />} />
 
-                {/* 게시글 번호에 맞는 상세 화면 */}
+                {/* 게시글 작성 */}
+                <Route path="/board/new" element={<ArticleCreatePage />} />
+
+                {/* 게시글 상세 */}
                 <Route
                     path="/board/:articleId"
                     element={<ArticleDetailPage />}
