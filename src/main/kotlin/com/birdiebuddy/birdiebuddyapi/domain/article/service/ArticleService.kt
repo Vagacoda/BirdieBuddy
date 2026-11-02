@@ -353,6 +353,9 @@ class ArticleService(
         val user = article.user
             ?: throw IllegalStateException("게시글 작성자 정보가 없습니다.")
 
+        // 2026/11/02 - 오류 리포트
+        // ArticleDetailResponse에 authorId를 추가했는데, 서비스에서 응답을 만들 때 값을 전달하지 않아 생긴 문제
+        // 즉, nickname만 넘기고 userId를 넘기지 않아 생긴 문제임
         return ArticleDetailResponse(
             id = article.id
                 ?: throw IllegalStateException("게시글 ID가 없습니다."),
