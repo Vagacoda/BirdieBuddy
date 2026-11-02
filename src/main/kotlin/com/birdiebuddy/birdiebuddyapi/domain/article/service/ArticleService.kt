@@ -360,6 +360,11 @@ class ArticleService(
             category = article.category,
             title = article.title,
             content = article.content,
+
+            // 추가: 게시글 작성자의 회원 ID
+            authorId = user.id
+                ?: throw IllegalStateException("작성자 ID가 없습니다."),
+
             authorNickname = user.nickname,
             viewCount = article.viewCount,
             createdAt = article.createdAt,

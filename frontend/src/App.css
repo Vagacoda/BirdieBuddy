@@ -418,3 +418,42 @@
 .article-login-notice {
   margin-bottom: 20px;
 }
+
+/* 상세 화면의 수정·삭제, 수정 화면의 저장·취소 버튼 */
+.article-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.article-actions button {
+  padding: 9px 18px;
+  border: 1px solid #ccd9cf;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #24332b;
+  font: inherit;
+}
+
+.article-actions button:hover:not(:disabled) {
+  background: #edf3ed;
+}
+
+.article-actions .danger-button {
+  border-color: #dba8a2;
+  color: #b42318;
+}
+
+.article-actions .danger-button:hover:not(:disabled) {
+  background: #fff1f0;
+}
+
+.article-actions button:disabled {
+  opacity: 0.5;
+}
+
+.article-feedback {
+  margin-top: 16px;
+}
