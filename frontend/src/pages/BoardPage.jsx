@@ -121,7 +121,12 @@ function BoardPage() {
         <main className="board-page">
             <Link to="/">홈으로</Link>
 
-            <h1>게시판</h1>
+            <div className="board-title-row">
+                <h1>게시판</h1>
+                <Link className="write-link" to="/board/new">
+                    글쓰기
+                </Link>
+            </div>
 
             {/* 카테고리는 검색창이 아닌 목록 위에서 선택 */}
             <div className="board-categories" aria-label="게시글 카테고리">

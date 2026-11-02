@@ -341,3 +341,80 @@
   color: #b42318;
   font-size: 14px;
 }
+
+/* 게시판 제목과 글쓰기 링크 */
+.board-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 16px 0 24px;
+}
+
+.board-title-row h1 {
+  margin: 0;
+}
+
+.write-link {
+  padding: 9px 16px;
+  border-radius: 6px;
+  background: #246743;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.write-link:hover {
+  background: #1d5537;
+  text-decoration: none;
+}
+
+/* 게시글 작성 폼 */
+.article-editor fieldset {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.article-editor label {
+  font-weight: bold;
+}
+
+.article-editor input,
+.article-editor select,
+.article-editor textarea {
+  width: 100%;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid #ccd9cf;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #24332b;
+  font: inherit;
+}
+
+.article-editor textarea {
+  min-height: 280px;
+  resize: vertical;
+  line-height: 1.7;
+}
+
+.article-editor-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.article-editor-actions button {
+  padding: 10px 24px;
+}
+
+.article-editor [role="alert"] {
+  margin-top: 16px;
+}
+
+.article-login-notice {
+  margin-bottom: 20px;
+}
