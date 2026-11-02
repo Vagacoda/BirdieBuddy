@@ -13,7 +13,7 @@ import java.time.LocalDateTime
 // → 댓글 ID, 내용, 작성자, 작성·수정 시각 포함
 
 
-// ArticleDetailResponse와 마찬가지로 authorId를 추가
+// 2026/11/02 - ArticleDetailResponse와 마찬가지로 authorId를 추가
 data class CommentResponse(
     val id: Long,
     val content: String,

@@ -160,9 +160,15 @@ class CommentService(
             ?: throw IllegalStateException("댓글 작성자 정보가 없습니다.")
         // 댓글 작성자가 있는지 확인
 
+        // 2026/11/02 - 마찬가지로 userId가 없기에 추가
         return CommentResponse(
             id = commentId,
             content = comment.content,
+
+            // 응답 객체에 필드를 추가했으므로 값도 전달
+            authorId = user.id
+                ?: throw IllegalStateException("댓글 작성자 ID가 없습니다."),
+
             authorNickname = user.nickname,
             createdAt = comment.createdAt,
             updatedAt = comment.updatedAt

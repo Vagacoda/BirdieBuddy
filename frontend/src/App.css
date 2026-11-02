@@ -457,3 +457,70 @@
 .article-feedback {
   margin-top: 16px;
 }
+
+/* 댓글 영역 */
+.comment-section {
+  margin-top: 36px;
+  padding-top: 24px;
+  border-top: 1px solid #dce4de;
+}
+
+.comment-section h2 {
+  margin-bottom: 20px;
+}
+
+.comment-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.comment-item {
+  padding: 18px 0;
+  border-bottom: 1px solid #e6ece7;
+}
+
+.comment-meta {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.comment-meta time {
+  color: #66756b;
+  font-size: 13px;
+}
+
+.comment-content {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.comment-form {
+  display: grid;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.comment-form label {
+  font-weight: bold;
+}
+
+.comment-form textarea {
+  width: 100%;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid #ccd9cf;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #24332b;
+  font: inherit;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+.comment-section .article-actions {
+  margin-top: 10px;
+}

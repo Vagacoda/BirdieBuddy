@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
+import CommentSection from '../components/CommentSection.jsx'
 import '../App.css'
 
 const TOKEN_KEY = 'birdiebuddy.accessToken'
@@ -429,6 +430,13 @@ function ArticleDetailContent({ articleId }) {
                             {message}
                         </p>
                     )}
+                    <CommentSection
+                        key={articleId}
+                        articleId={articleId}
+                        myId={myId}
+                        needsLogin={needsLogin}
+                        onUnauthorized={() => setNeedsLogin(true)}
+                    />
                 </>
             )}
         </main>
