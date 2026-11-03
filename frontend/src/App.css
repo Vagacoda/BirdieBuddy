@@ -565,3 +565,120 @@
   background: #edf3ed;
   text-decoration: none;
 }
+
+.profile-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.profile-edit-link {
+  padding: 8px 12px;
+  border: 1px solid #246743;
+  border-radius: 6px;
+  background: #fff;
+  white-space: nowrap;
+}
+
+.account-page {
+  padding-top: 24px;
+}
+
+.account-card {
+  max-width: 680px;
+  margin: 20px auto;
+  padding: 28px;
+  border: 1px solid #dce4de;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.account-card h1 {
+  margin-bottom: 24px;
+}
+
+.account-card h2 {
+  margin-bottom: 12px;
+}
+
+.account-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.account-form + .account-form {
+  border-top: 1px solid #dce4de;
+  padding-top: 24px;
+}
+
+.account-form label {
+  font-weight: bold;
+}
+
+.account-form input {
+  min-width: 0;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccd9cf;
+  border-radius: 6px;
+}
+
+.account-inline {
+  display: flex;
+  gap: 8px;
+}
+
+.account-inline input {
+  flex: 1;
+}
+
+.account-inline button {
+  flex: none;
+}
+
+.account-form > button {
+  align-self: flex-start;
+  margin-top: 10px;
+}
+
+.account-help,
+.account-readonly small {
+  color: #66756b;
+  font-size: 14px;
+}
+
+.account-readonly {
+  padding: 16px;
+  border-radius: 6px;
+  background: #edf3ed;
+}
+
+.account-readonly p {
+  overflow-wrap: anywhere;
+}
+
+.account-success {
+  display: grid;
+  gap: 14px;
+}
+
+@media (max-width: 640px) {
+  .account-card {
+    padding: 20px;
+  }
+
+  .account-inline {
+    flex-wrap: wrap;
+  }
+
+  .account-inline input {
+    flex-basis: 100%;
+  }
+
+  .profile-header-row {
+    flex-wrap: wrap;
+  }
+}

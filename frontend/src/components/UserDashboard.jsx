@@ -197,6 +197,10 @@ function UserDashboard() {
                     <button type="submit" disabled={submitting}>
                         {submitting ? '로그인 중...' : '로그인'}
                     </button>
+
+                    <Link className="dashboard-profile-link" to="/signup">
+                        회원가입
+                    </Link>
                 </form>
             )}
 
