@@ -374,7 +374,10 @@ function ArticleDetailContent({ articleId }) {
                                 <h1>{article.title}</h1>
 
                                 <p>
-                                    작성자: {article.authorNickname}
+                                    작성자:{' '}
+                                    <Link to={`/users/${article.authorId}`}>
+                                        {article.authorNickname}
+                                    </Link>
                                     {' · '}
                                     조회수: {article.viewCount}
                                 </p>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 
 // 이 탭에서 사용할 로그인 토큰의 저장 이름
 const TOKEN_KEY = 'birdiebuddy.accessToken'
@@ -159,6 +160,9 @@ function UserDashboard() {
                     </p>
 
                     <p className="dashboard-email">{user.email}</p>
+                    <Link className="dashboard-profile-link" to={`/users/${user.id}`}>
+                        내 프로필
+                    </Link>
 
                     <button type="button" onClick={handleLogout}>
                         로그아웃

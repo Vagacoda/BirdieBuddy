@@ -3,6 +3,7 @@ import HomePage from './pages/HomePage.jsx'
 import BoardPage from './pages/BoardPage.jsx'
 import ArticleDetailPage from './pages/ArticleDetailPage.jsx'
 import ArticleCreatePage from './pages/ArticleCreatePage.jsx'
+import UserProfilePage from './pages/UserProfilePage.jsx'
 
 function App() {
     return (
@@ -12,13 +13,17 @@ function App() {
 
                 <Route path="/board" element={<BoardPage />} />
 
-                {/* 게시글 작성 */}
                 <Route path="/board/new" element={<ArticleCreatePage />} />
 
-                {/* 게시글 상세 */}
                 <Route
                     path="/board/:articleId"
                     element={<ArticleDetailPage />}
+                />
+
+                {/* 내 프로필과 다른 사람 프로필에서 공통 사용 */}
+                <Route
+                    path="/users/:userId"
+                    element={<UserProfilePage />}
                 />
 
                 <Route

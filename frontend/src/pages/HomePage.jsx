@@ -107,7 +107,11 @@ function HomePage() {
                                             </td>
 
                                             {/* 네 번째 칸: 작성자 */}
-                                            <td>{article.authorNickname}</td>
+                                            <td>
+                                                <Link to={`/users/${article.authorId}`}>
+                                                    {article.authorNickname}
+                                                </Link>
+                                            </td>
 
                                             {/* 다섯 번째 칸: 조회수 */}
                                             <td>{article.viewCount}</td>
