@@ -149,7 +149,6 @@ function UserDashboard() {
 
     return (
         <aside className="panel user-panel">
-            <h2>유저 대시보드</h2>
 
             {checking ? (
                 <p role="status">로그인 상태를 확인하고 있습니다.</p>

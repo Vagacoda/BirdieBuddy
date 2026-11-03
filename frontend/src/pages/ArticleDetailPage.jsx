@@ -6,13 +6,41 @@ import '../App.css'
 
 const TOKEN_KEY = 'birdiebuddy.accessToken'
 
-// 조회수 중복 방지에 사용하는 브라우저 방문자 ID
+// 브라우저 환경에 맞춰 표준 UUID 형식의 방문자 ID 생성
+function createVisitorId() {
+    // HTTPS 또는 localhost에서는 기본 기능 사용
+    if (typeof window.crypto.randomUUID === 'function') {
+        return window.crypto.randomUUID()
+    }
+
+    // HTTP 접속에서도 사용할 수 있는 난수 생성 기능
+    const bytes = new Uint8Array(16)
+    window.crypto.getRandomValues(bytes)
+
+    // UUID v4의 버전과 형식 설정
+    bytes[6] = (bytes[6] & 0x0f) | 0x40
+    bytes[8] = (bytes[8] & 0x3f) | 0x80
+
+    const hex = Array.from(bytes, (byte) =>
+        byte.toString(16).padStart(2, '0')
+    ).join('')
+
+    return [
+        hex.slice(0, 8),
+        hex.slice(8, 12),
+        hex.slice(12, 16),
+        hex.slice(16, 20),
+        hex.slice(20, 32),
+    ].join('-')
+}
+
+// 조회수 중복 방지를 위해 기존 방문자 ID는 계속 재사용
 function getVisitorId() {
     const key = 'birdiebuddy.visitorId'
     let visitorId = localStorage.getItem(key)
 
     if (!visitorId) {
-        visitorId = crypto.randomUUID()
+        visitorId = createVisitorId()
         localStorage.setItem(key, visitorId)
     }
 
