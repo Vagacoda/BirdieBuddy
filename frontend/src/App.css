@@ -682,3 +682,38 @@
     flex-wrap: wrap;
   }
 }
+
+.article-votes {
+  margin-top: 28px;
+  padding-top: 22px;
+  border-top: 1px solid #dce4de;
+  text-align: center;
+}
+
+.article-vote-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.article-vote-buttons button {
+  padding: 10px 20px;
+  border: 1px solid #ccd9cf;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.article-vote-buttons button[aria-pressed="true"] {
+  border-color: #246743;
+  background: #edf3ed;
+  color: #246743;
+  font-weight: bold;
+}
+
+.article-vote-buttons button:disabled {
+  opacity: 0.6;
+}
+
+.article-votes [role="alert"] {
+  margin-top: 12px;
+}

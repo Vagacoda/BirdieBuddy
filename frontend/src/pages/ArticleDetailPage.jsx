@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import CommentSection from '../components/CommentSection.jsx'
+import ArticleVoteSection from '../components/ArticleVoteSection.jsx'
 import '../App.css'
 
 const TOKEN_KEY = 'birdiebuddy.accessToken'
@@ -397,6 +398,11 @@ function ArticleDetailContent({ articleId }) {
                             >
                                 {article.content}
                             </div>
+                            <ArticleVoteSection
+                                key={articleId}
+                                articleId={articleId}
+                                onUnauthorized={() => setNeedsLogin(true)}
+                            />
 
                             {/* 본인 글에서만 수정·삭제 표시 */}
                             {isOwner && !needsLogin && (
