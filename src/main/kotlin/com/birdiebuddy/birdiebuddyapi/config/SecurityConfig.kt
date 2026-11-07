@@ -87,6 +87,15 @@ class SecurityConfig (
                     "/api/users/*",
                     "/api/users/*/articles"
                 ).permitAll()
+                auth.requestMatchers(
+                    HttpMethod.GET,
+                    "/uploads/**"
+                ).permitAll()
+
+                auth.requestMatchers(
+                    HttpMethod.HEAD,
+                    "/uploads/**"
+                ).permitAll()
                 // /api/users(회원가입 API주소) 는 비회원도 접근 가능.
                 auth.anyRequest().authenticated()
                 // 그 외 모든 주소는 JWT 등으로 로그인 인증을 통과한 회원만 접근가능.
