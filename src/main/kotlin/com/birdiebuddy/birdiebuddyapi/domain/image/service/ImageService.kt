@@ -66,6 +66,7 @@ class ImageService(
         try {
             MemoryCacheImageInputStream(
                 ByteArrayInputStream(bytes)
+                // 바이트 배열을 이미지 처리 도구가 읽을 수 있는 형태로 감쌈
             ).use { input ->
                 // 파일 내용을 해석할 수 있는 이미지 리더 탐색
                 val readers = ImageIO.getImageReaders(input)
