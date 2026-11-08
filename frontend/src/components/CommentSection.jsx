@@ -190,29 +190,46 @@ function CommentSection({
         })
     }
 
-    function handleDelete(commentId) {
-        if (busyRef.current) {
+    function handleDelete(comment) {
+        if (busyRef.current || !canWrite) {
             return
         }
 
-        if (!window.confirm('이 댓글을 삭제하시겠습니까?')) {
+        const deletingAsAdmin =
+            isAdmin && myId !== comment.authorId
+
+        const confirmed = window.confirm(
+            deletingAsAdmin
+                ? '관리자 권한으로 이 댓글을 삭제하시겠습니까?'
+                : '이 댓글을 삭제하시겠습니까?'
+        )
+
+        if (!confirmed) {
             return
         }
 
         runAction(async () => {
-            await sendRequest(`${baseUrl}/${commentId}`, 'DELETE')
+            const deleteUrl = deletingAsAdmin
+                ? `/api/admin/articles/${articleId}/comments/${comment.id}`
+                : `${baseUrl}/${comment.id}`
 
-            // 삭제에 성공한 댓글을 화면에서도 제거
+            await sendRequest(deleteUrl, 'DELETE')
+
+            // 삭제 성공한 댓글을 화면에서도 제거
             setComments((previous) =>
-                previous.filter((comment) => comment.id !== commentId)
+                previous.filter((item) => item.id !== comment.id)
             )
 
-            if (editingId === commentId) {
+            if (editingId === comment.id) {
                 setEditingId(null)
                 setEditContent('')
             }
 
-            setMessage('댓글이 삭제되었습니다.')
+            setMessage(
+                deletingAsAdmin
+                    ? '관리자 권한으로 댓글을 삭제했습니다.'
+                    : '댓글이 삭제되었습니다.'
+            )
         })
     }
 
