@@ -96,6 +96,11 @@ class SecurityConfig (
                     HttpMethod.HEAD,
                     "/uploads/**"
                 ).permitAll()
+                // 이미지는 로그인하지 않아도 조회 가능
+                auth.requestMatchers(
+                    HttpMethod.GET,
+                    "/api/images/*"
+                ).permitAll()
                 // /api/users(회원가입 API주소) 는 비회원도 접근 가능.
                 auth.anyRequest().authenticated()
                 // 그 외 모든 주소는 JWT 등으로 로그인 인증을 통과한 회원만 접근가능.

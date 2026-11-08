@@ -11,6 +11,8 @@ import javax.imageio.stream.MemoryCacheImageInputStream
 import com.birdiebuddy.birdiebuddyapi.domain.image.ImageEntity
 import com.birdiebuddy.birdiebuddyapi.domain.image.ImageRepository
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.http.HttpStatus
+import org.springframework.web.server.ResponseStatusException
 
 @Service
 class ImageService(
@@ -65,6 +67,18 @@ class ImageService(
         return ImageUploadResponse(
             url = "/api/images/$imageId"
         )
+    }
+
+    // 조회함수
+    @Transactional(readOnly = true)
+    fun getImage(imageId: Long): ImageEntity {
+        return imageRepository.findById(imageId)
+            .orElseThrow {
+                ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "존재하지 않는 이미지입니다."
+                )
+            }
     }
 
     private fun validateImage(bytes: ByteArray): String {

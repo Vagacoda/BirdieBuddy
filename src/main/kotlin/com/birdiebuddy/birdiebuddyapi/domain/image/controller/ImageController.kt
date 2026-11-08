@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.security.core.Authentication
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 
 @RestController
 @RequestMapping("/api/images")
@@ -34,5 +36,20 @@ class ImageController(
         )
 
         return ResponseEntity.ok(result)
+    }
+    @GetMapping("/{imageId}")
+    fun getImage(
+        @PathVariable imageId: Long
+    ): ResponseEntity<ByteArray> {
+        // DB에서 이미지 정보와 실제 사진 데이터를 조회
+        val image = imageService.getImage(imageId)
+
+        return ResponseEntity.ok()
+            // 브라우저에 PNG인지 JPEG인지 등을 알려줌
+            .contentType(MediaType.parseMediaType(image.contentType))
+            // 전송할 데이터 크기
+            .contentLength(image.data.size.toLong())
+            // JSON 대신 실제 사진 바이트를 응답
+            .body(image.data)
     }
 }
