@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 import java.time.LocalDateTime
+import org.springframework.data.jpa.repository.JpaRepository
 
 @Entity
 @Table(name = "uploaded_image")
@@ -33,3 +34,5 @@ class ImageEntity(
     @Column(name = "created_at", nullable = false, updatable = false)
     var createdAt: LocalDateTime = LocalDateTime.now()
 )
+
+interface ImageRepository : JpaRepository<ImageEntity, Long>
