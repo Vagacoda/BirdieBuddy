@@ -532,6 +532,7 @@ function ArticleDetailContent({ articleId }) {
                         key={articleId}
                         articleId={articleId}
                         myId={myId}
+                        isAdmin={isAdmin}
                         needsLogin={needsLogin}
                         onUnauthorized={() => setNeedsLogin(true)}
                     />
