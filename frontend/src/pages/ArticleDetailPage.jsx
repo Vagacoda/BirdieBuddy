@@ -3,9 +3,33 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import CommentSection from '../components/CommentSection.jsx'
 import ArticleVoteSection from '../components/ArticleVoteSection.jsx'
 import ArticleBody from '../components/ArticleBody.jsx'
+import ArticleEditor from '../components/ArticleEditor.jsx'
+import DOMPurify from 'dompurify'
 import '../App.css'
 
 const TOKEN_KEY = 'birdiebuddy.accessToken'
+
+// 기존 게시글을 에디터에 넣을 HTML로 준비
+function toEditorHtml(content, contentFormat) {
+    if (contentFormat === 'HTML') {
+        // HTML 게시글은 위험한 내용을 정리한 뒤 사용
+        return DOMPurify.sanitize(content, {
+            USE_PROFILES: { html: true },
+        })
+    }
+
+    // 일반 텍스트의 <, >, &가 HTML로 해석되지 않도록 변환
+    const escaped = content
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+
+    // 기존 줄바꿈을 에디터의 문단으로 변환
+    return escaped
+        .split(/\r\n|\r|\n/)
+        .map((line) => `<p>${line || '<br>'}</p>`)
+        .join('')
+}
 
 // 브라우저 환경에 맞춰 표준 UUID 형식의 방문자 ID 생성
 function createVisitorId() {

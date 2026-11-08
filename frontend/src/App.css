@@ -717,3 +717,24 @@
 .article-votes [role="alert"] {
   margin-top: 12px;
 }
+
+.article-body {
+  overflow-wrap: anywhere;
+  line-height: 1.7;
+}
+
+.article-body p {
+  white-space: pre-wrap;
+}
+
+.article-body img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 12px 0;
+}
+
+.article-body pre {
+  overflow-x: auto;
+  white-space: pre;
+}
