@@ -5,5 +5,6 @@ package com.birdiebuddy.birdiebuddyapi.domain.user
 data class MyInfoResponse(
     val id: Long,
     val nickname: String,
-    val email: String
+    val email: String,
+    val role: String
 )

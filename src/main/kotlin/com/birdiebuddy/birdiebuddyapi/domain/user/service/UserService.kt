@@ -148,12 +148,16 @@ class UserService(
     }
 
     // 응답에는 필요한 정보만 담음
+    // 응답에는 필요한 정보만 담음
     private fun toMyInfoResponse(user: UserEntity): MyInfoResponse {
         return MyInfoResponse(
             id = user.id
                 ?: throw IllegalStateException("회원 ID가 없습니다."),
             nickname = user.nickname,
-            email = user.email
+            email = user.email,
+            // 회원에게 연결된 권한 이름도 응답에 포함
+            role = user.role?.name
+                ?: throw IllegalStateException("회원 권한 정보가 없습니다.")
         )
     }
 }
