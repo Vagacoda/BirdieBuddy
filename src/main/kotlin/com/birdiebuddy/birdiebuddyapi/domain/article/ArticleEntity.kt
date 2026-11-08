@@ -22,6 +22,8 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import jakarta.persistence.LockModeType
 import org.springframework.data.jpa.repository.Lock
+// 2026/11/08
+import jakarta.validation.constraints.Pattern
 
 // 2026/10/08 - 20:52
 
@@ -59,7 +61,7 @@ class ArticleEntity(
     @Column(nullable = false, columnDefinition = "LONGTEXT")
     var content: String = "",
 
-    // 본문 형식: 기존 일반 글은 TEXT, 에디터로 작성한 글은 HTML
+    // 본문 형식
     @Column(name = "content_format", nullable = false, length = 10)
     var contentFormat: String = "TEXT",
 
