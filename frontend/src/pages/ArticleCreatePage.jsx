@@ -136,14 +136,11 @@ function ArticleCreatePage() {
                         required
                     />
 
-                    <label htmlFor="article-content">내용</label>
-                    <textarea
-                        id="article-content"
-                        placeholder="내용을 입력하세요"
-                        rows={12}
-                        value={content}
-                        onChange={(event) => setContent(event.target.value)}
-                        required
+                    <p>내용</p>
+
+                    <ArticleEditor
+                        onChange={setContent}
+                        disabled={submitting || needsLogin}
                     />
 
                     <div className="article-editor-actions">

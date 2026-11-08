@@ -59,6 +59,10 @@ class ArticleEntity(
     @Column(nullable = false, columnDefinition = "LONGTEXT")
     var content: String = "",
 
+    // 본문 형식: 기존 일반 글은 TEXT, 에디터로 작성한 글은 HTML
+    @Column(name = "content_format", nullable = false, length = 10)
+    var contentFormat: String = "TEXT",
+
     // 조회수
     @Column(name = "view_count", nullable = false)
     var viewCount: Int = 0,
