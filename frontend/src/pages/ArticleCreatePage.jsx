@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import '../App.css'
+import ArticleEditor from '../components/ArticleEditor.jsx'
 
 const TOKEN_KEY = 'birdiebuddy.accessToken'
 
@@ -68,6 +69,7 @@ function ArticleCreatePage() {
                     title: title.trim(),
                     // 본문의 줄바꿈과 들여쓰기는 유지
                     content,
+                    contentFormat: 'HTML',
                 }),
             })
 

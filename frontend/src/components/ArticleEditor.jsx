@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import { EditorContent, useEditor, useEditorState } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-import ArticleEditor from '../components/ArticleEditor.jsx'
 
 function ArticleEditor({
                            initialContent = '',

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import CommentSection from '../components/CommentSection.jsx'
 import ArticleVoteSection from '../components/ArticleVoteSection.jsx'
+import ArticleBody from '../components/ArticleBody.jsx'
 import '../App.css'
 
 const TOKEN_KEY = 'birdiebuddy.accessToken'
@@ -250,6 +251,8 @@ function ArticleDetailContent({ articleId }) {
                 category,
                 title: title.trim(),
                 content,
+                // 수정 화면을 에디터로 교체하기 전까지 기존 형식 유지
+                contentFormat: article.contentFormat ?? 'TEXT',
             }
 
             const response = await fetch(`/api/articles/${articleId}`, {
@@ -418,14 +421,10 @@ function ArticleDetailContent({ articleId }) {
 
                             <hr />
 
-                            <div
-                                style={{
-                                    whiteSpace: 'pre-wrap',
-                                    overflowWrap: 'anywhere',
-                                }}
-                            >
-                                {article.content}
-                            </div>
+                            <ArticleBody
+                                content={article.content}
+                                contentFormat={article.contentFormat}
+                            />
                             <ArticleVoteSection
                                 key={articleId}
                                 articleId={articleId}
