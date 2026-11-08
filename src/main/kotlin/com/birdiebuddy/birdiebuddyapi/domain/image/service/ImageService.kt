@@ -1,26 +1,26 @@
 package com.birdiebuddy.birdiebuddyapi.domain.image.service
 
 import com.birdiebuddy.birdiebuddyapi.domain.image.ImageUploadResponse
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import java.io.ByteArrayInputStream
 import java.io.IOException
-import java.nio.file.Files
-import java.nio.file.Path
-import java.nio.file.StandardOpenOption
 import java.util.Locale
-import java.util.UUID
 import javax.imageio.ImageIO
 import javax.imageio.stream.MemoryCacheImageInputStream
+import com.birdiebuddy.birdiebuddyapi.domain.image.ImageEntity
+import com.birdiebuddy.birdiebuddyapi.domain.image.ImageRepository
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class ImageService(
-    // 설정값이 없으면 실행 위치의 uploads 폴더 사용
-    @Value("\${app.upload-dir:uploads}")
-    private val uploadDir: String
+    private val imageRepository: ImageRepository
 ) {
-    fun upload(image: MultipartFile): ImageUploadResponse {
+    @Transactional
+    fun upload(
+        image: MultipartFile,
+        userId: Long
+    ): ImageUploadResponse {
         // 빈 파일 차단
         require(!image.isEmpty) {
             "이미지 파일을 선택해주세요."
@@ -31,34 +31,39 @@ class ImageService(
             "이미지 파일은 5MB 이하만 업로드할 수 있습니다."
         }
 
+        // 실제 사진 데이터
         val bytes = image.bytes
 
-        // 원본 이름이나 브라우저가 보낸 형식을 믿지 않고
-        // 실제 파일 내용을 검사하여 확장자를 결정
+        // 기존 함수로 이미지 형식·해상도·데이터 검사
         val extension = validateImage(bytes)
 
-        // 상대 경로를 절대 경로로 변환
-        val directory = Path.of(uploadDir)
-            .toAbsolutePath()
-            .normalize()
+        // 검사에서 확인한 형식으로 응답에 사용할 이미지 타입 결정
+        val contentType = when (extension) {
+            "jpg" -> "image/jpeg"
+            "png" -> "image/png"
+            "gif" -> "image/gif"
+            else -> throw IllegalArgumentException(
+                "지원하지 않는 이미지 형식입니다."
+            )
+        }
 
-        // 저장 폴더가 없으면 생성
-        Files.createDirectories(directory)
-
-        // 서버에서 파일명을 새로 생성
-        val fileName = "${UUID.randomUUID()}.$extension"
-        val target = directory.resolve(fileName)
-
-        // 같은 이름의 파일이 있으면 덮어쓰지 않고 실패
-        Files.write(
-            target,
-            bytes,
-            StandardOpenOption.CREATE_NEW,
-            StandardOpenOption.WRITE
+        // DB에 저장할 이미지 객체 생성
+        val imageEntity = ImageEntity(
+            contentType = contentType,
+            data = bytes,
+            uploaderId = userId
         )
 
+        // 사진 바이트와 업로더 정보를 DB에 저장
+        val savedImage = imageRepository.save(imageEntity)
+
+        val imageId = checkNotNull(savedImage.id) {
+            "저장된 이미지의 ID가 없습니다."
+        }
+
+        // 이후 만들 이미지 조회 API 주소 반환
         return ImageUploadResponse(
-            url = "/uploads/$fileName"
+            url = "/api/images/$imageId"
         )
     }
 
