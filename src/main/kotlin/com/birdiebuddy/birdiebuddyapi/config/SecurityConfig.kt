@@ -52,11 +52,24 @@ class SecurityConfig (
                 it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             }
             .exceptionHandling { exception ->
+                // 인증되지 않은 사용자가 로그인 필수 API에 접근
                 exception.authenticationEntryPoint { _, response, _ ->
                     response.status = HttpServletResponse.SC_UNAUTHORIZED
                     response.contentType = "application/json"
                     response.characterEncoding = "UTF-8"
-                    response.writer.write("""{"message":"인증이 필요합니다."}""")
+                    response.writer.write(
+                        """{"message":"인증이 필요합니다."}"""
+                    )
+                }
+
+                // 로그인은 했지만 필요한 권한이 없는 경우
+                exception.accessDeniedHandler { _, response, _ ->
+                    response.status = HttpServletResponse.SC_FORBIDDEN
+                    response.contentType = "application/json"
+                    response.characterEncoding = "UTF-8"
+                    response.writer.write(
+                        """{"message":"접근 권한이 없습니다."}"""
+                    )
                 }
             }
             // csrf보호기능 off, 추후 JWT(JsonWebToken)을 Authorization헤더에 넣어 보내는 API방식 사용

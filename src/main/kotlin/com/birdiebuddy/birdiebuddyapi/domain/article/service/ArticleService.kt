@@ -441,5 +441,18 @@ class ArticleService(
         // 삭제 시각을 기록하여 삭제 처리
         article.deletedAt = LocalDateTime.now()
     }
+    // 관리자 전용 게시글 삭제
+// /api/admin/**의 ADMIN 권한 검사를 통과한 요청에서 호출
+    fun deleteArticleByAdmin(articleId: Long) {
+        val article = articleRepository
+            .findByIdAndDeletedAtIsNull(articleId)
+            ?: throw ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "존재하지 않거나 삭제된 게시글입니다."
+            )
+
+        // 관리자 삭제는 작성자 본인 여부를 검사하지 않음
+        article.deletedAt = LocalDateTime.now()
+    }
 }
 
