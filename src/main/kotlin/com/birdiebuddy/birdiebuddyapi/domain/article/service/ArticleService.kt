@@ -43,12 +43,13 @@ class ArticleService(
             }
 
         val article = ArticleEntity(
-            // DB에 저장할 게시글 객체를 만드는 부분
-            user = user, // 로그인 회원을 작성자로 연결
-            type = "NORMAL", // 기본은 일반글
-            category = request.category, // 사용자가 보낸 요청값 사용
-            title = request.title, // 사용자가 보낸 요청값 사용
-            content = request.content // 작성·수정 시각은 ArticleEntity의 기본값을 사용
+            user = user,
+            type = "NORMAL",
+            category = request.category,
+            title = request.title,
+            content = request.content,
+            // 요청에서 받은 본문 형식도 함께 저장
+            contentFormat = request.contentFormat
         )
 
         val savedArticle = articleRepository.save(article)
@@ -363,6 +364,7 @@ class ArticleService(
             category = article.category,
             title = article.title,
             content = article.content,
+            contentFormat = article.contentFormat,
 
             // 추가: 게시글 작성자의 회원 ID
             authorId = user.id
@@ -381,6 +383,7 @@ class ArticleService(
         articleId: Long, //어떤 게시글 수정할지
         userId: Long, // 누가 수정할지
         request: ArticleUpdateRequest // 무엇으로 수정할지
+
     ) {
         // 수정할 게시글 조회
         val article = articleRepository
@@ -407,6 +410,7 @@ class ArticleService(
         article.category = request.category
         article.title = request.title
         article.content = request.content
+        article.contentFormat = request.contentFormat
     }
 
     // 게시글 삭제 서비스

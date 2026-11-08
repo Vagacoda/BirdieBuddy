@@ -1,6 +1,7 @@
 package com.birdiebuddy.birdiebuddyapi.domain.article
 
 import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 
 // 2026/10/08 - 21:29
@@ -21,8 +22,13 @@ data class ArticleCreateRequest(
     // 제목을 받는 부분
 
     @field:NotBlank(message = "내용을 입력해주세요.")
-    val content: String
+    val content: String,
     // 게시글 본문 받음
+    @field:Pattern(
+        regexp = "TEXT|HTML",
+        message = "본문 형식은 TEXT 또는 HTML이어야 합니다."
+    )
+    val contentFormat: String = "TEXT"
 )
 
 // JSON 예시
