@@ -4,11 +4,12 @@ import { Link } from 'react-router-dom'
 const TOKEN_KEY = 'birdiebuddy.accessToken'
 
 function CommentSection({
-                            articleId,
-                            myId,
-                            needsLogin,
-                            onUnauthorized,
-                        }) {
+    articleId,
+    myId,
+    isAdmin = false,
+    needsLogin,
+    onUnauthorized,
+    }) {
     const [comments, setComments] = useState([])
     const [loading, setLoading] = useState(true)
     const [loadError, setLoadError] = useState('')
