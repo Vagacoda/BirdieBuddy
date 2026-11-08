@@ -98,7 +98,7 @@ function CommentSection({
         }
 
         if (response.status === 403) {
-            throw new Error('본인이 작성한 댓글만 수정·삭제할 수 있습니다.')
+            throw new Error('이 작업을 수행할 권한이 없습니다.')
         }
 
         if (response.status === 404) {
@@ -313,23 +313,29 @@ function CommentSection({
                                         <p className="comment-content">{comment.content}</p>
 
                                         {/* 게시글 작성자가 아니라 댓글 작성자와 비교 */}
-                                        {canWrite && myId === comment.authorId && (
+                                        {/* 댓글 작성자 또는 관리자에게 버튼 표시 */}
+                                        {canWrite && (myId === comment.authorId || isAdmin) && (
                                             <div className="article-actions">
-                                                <button
-                                                    type="button"
-                                                    disabled={busy}
-                                                    onClick={() => startEditing(comment)}
-                                                >
-                                                    수정
-                                                </button>
+                                                {/* 수정은 댓글 작성자 본인만 가능 */}
+                                                {myId === comment.authorId && (
+                                                    <button
+                                                        type="button"
+                                                        disabled={busy}
+                                                        onClick={() => startEditing(comment)}
+                                                    >
+                                                        수정
+                                                    </button>
+                                                )}
 
                                                 <button
                                                     type="button"
                                                     className="danger-button"
                                                     disabled={busy}
-                                                    onClick={() => handleDelete(comment.id)}
+                                                    onClick={() => handleDelete(comment)}
                                                 >
-                                                    삭제
+                                                    {isAdmin && myId !== comment.authorId
+                                                        ? '관리자 삭제'
+                                                        : '삭제'}
                                                 </button>
                                             </div>
                                         )}
