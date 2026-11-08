@@ -147,6 +147,30 @@ class CommentService(
         comment.deletedAt = LocalDateTime.now()
     }
 
+    // 관리자 전용 댓글 삭제
+    fun deleteCommentByAdmin(
+        articleId: Long,
+        commentId: Long
+    ) {
+        // 댓글이 속한 게시글 확인
+        articleRepository.findByIdAndDeletedAtIsNull(articleId)
+            ?: throw ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "존재하지 않거나 삭제된 게시글입니다."
+            )
+
+        // 해당 게시글에 속한 삭제되지 않은 댓글 조회
+        val comment = commentRepository
+            .findByIdAndArticle_IdAndDeletedAtIsNull(commentId, articleId)
+            ?: throw ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "존재하지 않거나 삭제된 댓글입니다."
+            )
+
+        // 관리자이므로 작성자 본인 여부는 검사하지 않음
+        comment.deletedAt = LocalDateTime.now()
+    }
+
 
     // 댓글 Entity를 응답 객체로 바꾸는 공통 함수
     private fun toCommentResponse( // CommentService 내부에서만 사용되기 때문에 private

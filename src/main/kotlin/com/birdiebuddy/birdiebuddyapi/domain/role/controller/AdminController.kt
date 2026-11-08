@@ -7,11 +7,13 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import com.birdiebuddy.birdiebuddyapi.domain.comment.service.CommentService
 
 @RestController
 @RequestMapping("/api/admin")
 class AdminController(
-    private val articleService: ArticleService
+    private val articleService: ArticleService,
+    private val commentService: CommentService
 ) {
 
     @GetMapping("/check")
@@ -33,6 +35,21 @@ class AdminController(
 
         return mapOf(
             "message" to "관리자 권한으로 게시글을 삭제했습니다."
+        )
+    }
+
+    @DeleteMapping("/articles/{articleId}/comments/{commentId}")
+    fun deleteComment(
+        @PathVariable articleId: Long,
+        @PathVariable commentId: Long
+    ): Map<String, String> {
+        commentService.deleteCommentByAdmin(
+            articleId = articleId,
+            commentId = commentId
+        )
+
+        return mapOf(
+            "message" to "관리자 권한으로 댓글을 삭제했습니다."
         )
     }
 }
