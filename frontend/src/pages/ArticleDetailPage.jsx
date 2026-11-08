@@ -409,14 +409,22 @@ function ArticleDetailContent({ articleId }) {
                                     initialContent={content}
                                     onChange={setContent}
                                     disabled={busy || needsLogin}
+                                    onUploadingChange={setImageUploading}
                                 />
 
                                 <div className="article-actions">
-                                    <button type="button" onClick={cancelEditing}>
+                                    <button
+                                        type="button"
+                                        onClick={cancelEditing}
+                                        disabled={imageUploading}
+                                    >
                                         취소
                                     </button>
 
-                                    <button type="submit" disabled={needsLogin}>
+                                    <button
+                                        type="submit"
+                                        disabled={needsLogin || imageUploading}
+                                    >
                                         {busy ? '저장 중...' : '저장'}
                                     </button>
                                 </div>

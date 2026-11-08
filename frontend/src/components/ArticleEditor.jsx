@@ -40,7 +40,19 @@ function ArticleEditor({
 
         // 내용이 바뀌면 부모 화면에 HTML 문자열 전달
         onUpdate: ({ editor }) => {
-            onChange(editor.isEmpty ? '' : editor.getHTML())
+            // 공백을 제외한 글자가 있는지 확인
+            const hasText = editor.getText().trim().length > 0
+
+            // 이미지로만 작성한 게시글도 허용
+            let hasImage = false
+
+            editor.state.doc.descendants((node) => {
+                if (node.type.name === 'image') {
+                    hasImage = true
+                }
+            })
+
+            onChange(hasText || hasImage ? editor.getHTML() : '')
         },
 
         // 실제 입력 영역의 속성과 기본 디자인
