@@ -88,6 +88,7 @@ function ArticleDetailContent({ articleId }) {
 
     // 서버에서 확인한 로그인 회원 ID
     const [myId, setMyId] = useState(null)
+    const [myRole, setMyRole] = useState(null)
     const [authError, setAuthError] = useState('')
     const [needsLogin, setNeedsLogin] = useState(false)
 
@@ -175,6 +176,7 @@ function ArticleDetailContent({ articleId }) {
 
                 if (!ignore) {
                     setMyId(data.id)
+                    setMyRole(data.role)
                 }
             } catch (error) {
                 if (!ignore) {
@@ -198,6 +200,12 @@ function ArticleDetailContent({ articleId }) {
         article !== null &&
         myId !== null &&
         article.authorId === myId
+
+    // 관리자 계정인지 확인
+    const isAdmin = myRole === 'ADMIN'
+
+    // 다른 사람의 글을 관리자로 삭제하는 경우
+    const deletingAsAdmin = isAdmin && !isOwner
 
     function startEditing() {
         // 현재 게시글 내용을 입력창에 복사
@@ -242,7 +250,7 @@ function ArticleDetailContent({ articleId }) {
         }
 
         if (response.status === 403) {
-            throw new Error('본인이 작성한 게시글만 수정·삭제할 수 있습니다.')
+            throw new Error('이 작업을 수행할 권한이 없습니다.')
         }
 
         if (response.status === 404) {
@@ -320,7 +328,11 @@ function ArticleDetailContent({ articleId }) {
             return
         }
 
-        const confirmed = window.confirm('이 게시글을 삭제하시겠습니까?')
+        const confirmed = window.confirm(
+            deletingAsAdmin
+                ? '관리자 권한으로 이 게시글을 삭제하시겠습니까?'
+                : '이 게시글을 삭제하시겠습니까?'
+        )
 
         if (!confirmed) {
             return
@@ -334,7 +346,11 @@ function ArticleDetailContent({ articleId }) {
         try {
             const token = getAccessToken()
 
-            const response = await fetch(`/api/articles/${articleId}`, {
+            const deleteUrl = deletingAsAdmin
+                ? `/api/admin/articles/${articleId}`
+                : `/api/articles/${articleId}`
+
+            const response = await fetch(deleteUrl, {
                 method: 'DELETE',
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -470,15 +486,19 @@ function ArticleDetailContent({ articleId }) {
                             />
 
                             {/* 본인 글에서만 수정·삭제 표시 */}
-                            {isOwner && !needsLogin && (
+                            {/* 작성자 또는 관리자에게 버튼 표시 */}
+                            {(isOwner || isAdmin) && !needsLogin && (
                                 <div className="article-actions">
-                                    <button
-                                        type="button"
-                                        disabled={busy}
-                                        onClick={startEditing}
-                                    >
-                                        수정
-                                    </button>
+                                    {/* 수정은 작성자 본인만 가능 */}
+                                    {isOwner && (
+                                        <button
+                                            type="button"
+                                            disabled={busy}
+                                            onClick={startEditing}
+                                        >
+                                            수정
+                                        </button>
+                                    )}
 
                                     <button
                                         type="button"
@@ -486,7 +506,11 @@ function ArticleDetailContent({ articleId }) {
                                         disabled={busy}
                                         onClick={handleDelete}
                                     >
-                                        {busy ? '삭제 중...' : '삭제'}
+                                        {busy
+                                            ? '삭제 중...'
+                                            : deletingAsAdmin
+                                                ? '관리자 삭제'
+                                                : '삭제'}
                                     </button>
                                 </div>
                             )}
