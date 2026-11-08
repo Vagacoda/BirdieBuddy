@@ -97,6 +97,9 @@ function ArticleDetailContent({ articleId }) {
     const [title, setTitle] = useState('')
     const [content, setContent] = useState('')
 
+    // 이미지 업로드 진행 상태
+    const [imageUploading, setImageUploading] = useState(false)
+
     // 수정·삭제 요청 상태
     const [busy, setBusy] = useState(false)
     const busyRef = useRef(false)
@@ -200,7 +203,9 @@ function ArticleDetailContent({ articleId }) {
         // 현재 게시글 내용을 입력창에 복사
         setCategory(article.category)
         setTitle(article.title)
-        setContent(article.content)
+        setContent(
+            toEditorHtml(article.content, article.contentFormat)
+        )
 
         setActionError('')
         setMessage('')
@@ -254,9 +259,11 @@ function ArticleDetailContent({ articleId }) {
     async function handleUpdate(event) {
         event.preventDefault()
 
-        if (busyRef.current) {
+        // 저장 중이거나 이미지 업로드 중이면 제출 차단
+        if (busyRef.current || imageUploading) {
             return
         }
+
 
         setActionError('')
         setMessage('')
@@ -276,7 +283,7 @@ function ArticleDetailContent({ articleId }) {
                 title: title.trim(),
                 content,
                 // 수정 화면을 에디터로 교체하기 전까지 기존 형식 유지
-                contentFormat: article.contentFormat ?? 'TEXT',
+                contentFormat: 'HTML',
             }
 
             const response = await fetch(`/api/articles/${articleId}`, {
@@ -396,13 +403,12 @@ function ArticleDetailContent({ articleId }) {
                                     required
                                 />
 
-                                <label htmlFor="edit-content">내용</label>
-                                <textarea
-                                    id="edit-content"
-                                    rows={12}
-                                    value={content}
-                                    onChange={(event) => setContent(event.target.value)}
-                                    required
+                                <p>내용</p>
+
+                                <ArticleEditor
+                                    initialContent={content}
+                                    onChange={setContent}
+                                    disabled={busy || needsLogin}
                                 />
 
                                 <div className="article-actions">

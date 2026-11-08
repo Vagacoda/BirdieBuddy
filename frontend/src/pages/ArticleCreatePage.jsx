@@ -18,6 +18,9 @@ function ArticleCreatePage() {
     const [submitting, setSubmitting] = useState(false)
     const [error, setError] = useState('')
 
+    // 이미지 업로드가 진행 중인지 저장
+    const [imageUploading, setImageUploading] = useState(false)
+
     // 토큰이 없으면 로그인 안내
     // 토큰이 실제로 유효한지는 서버에서 검사
     const [needsLogin, setNeedsLogin] = useState(
@@ -30,7 +33,8 @@ function ArticleCreatePage() {
     async function handleSubmit(event) {
         event.preventDefault()
 
-        if (submittingRef.current) {
+        // 게시글 전송 중이거나 이미지 업로드 중이면 등록하지 않음
+        if (submittingRef.current || imageUploading) {
             return
         }
 
@@ -143,10 +147,11 @@ function ArticleCreatePage() {
                     <ArticleEditor
                         onChange={setContent}
                         disabled={submitting || needsLogin}
+                        onUploadingChange={setImageUploading}
                     />
 
                     <div className="article-editor-actions">
-                        <button type="submit">
+                        <button type="submit" disabled={imageUploading}>
                             {submitting ? '등록 중...' : '등록'}
                         </button>
                     </div>
