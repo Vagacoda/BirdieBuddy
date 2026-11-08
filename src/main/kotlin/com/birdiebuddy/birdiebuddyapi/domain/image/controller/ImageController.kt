@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
+import org.springframework.security.core.Authentication
 
 @RestController
 @RequestMapping("/api/images")
@@ -21,14 +22,17 @@ class ImageController(
         consumes = [MediaType.MULTIPART_FORM_DATA_VALUE]
     )
     fun upload(
-        // 요청에서 image라는 이름으로 보낸 파일을 받음
-        @RequestParam("image") image: MultipartFile
+        @RequestParam("image") image: MultipartFile,
+        authentication: Authentication
     ): ResponseEntity<ImageUploadResponse> {
+        // 기존 JWT 필터가 인증 정보에 넣은 회원 번호
+        val userId = authentication.principal as Long
 
-        // 파일 검사와 저장은 Service에 맡김
-        val result = imageService.upload(image)
+        val result = imageService.upload(
+            image = image,
+            userId = userId
+        )
 
-        // 저장된 이미지 URL을 200 OK 응답으로 반환
         return ResponseEntity.ok(result)
     }
 }
