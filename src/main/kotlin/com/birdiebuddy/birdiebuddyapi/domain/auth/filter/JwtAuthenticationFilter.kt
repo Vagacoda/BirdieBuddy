@@ -7,10 +7,11 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpHeaders
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.GrantedAuthority
+// import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 
 // 2026/10/06 - 22:00
 
@@ -41,12 +42,20 @@ class JwtAuthenticationFilter(
         val token = authorizationHeader.removePrefix("Bearer ")
 
         try {
-            val userId = jwtService.getUserId(token)
+            // JWT와 회원 상태를 검증하고 현재 역할까지 가져옴
+            val authenticatedUser = jwtService.getAuthenticatedUser(token)
 
             val authentication = UsernamePasswordAuthenticationToken(
-                userId,
+                // 기존 Controller에서 사용하는 회원 ID 형태는 유지
+                authenticatedUser.userId,
                 null,
-                emptyList<GrantedAuthority>()
+                // ADMIN → ROLE_ADMIN
+                // MEMBER → ROLE_MEMBER
+                listOf(
+                    SimpleGrantedAuthority(
+                        "ROLE_${authenticatedUser.roleName}"
+                    )
+                )
             )
 
             //SecurityContextHolder.getContext().authentication = authentication

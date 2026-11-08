@@ -63,6 +63,8 @@ class SecurityConfig (
             // 로그인한 사용자가 요청할때마다 로그인상태를 증명해야하기 때문에 번거롭지 않게 JWT를 사용.
             .authorizeHttpRequests { auth -> // 주소별 접근 권한 설정이며, API 접근 권한을 정함
                 auth.dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
+                // 관리자 전용 API는 ADMIN 역할만 접근 가능
+                auth.requestMatchers("/api/admin/**").hasRole("ADMIN")
                 auth.requestMatchers(
                     HttpMethod.GET,
                     "/api/articles",

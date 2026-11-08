@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.util.Date
 import javax.crypto.SecretKey
+// 2026/11/08
+import com.birdiebuddy.birdiebuddyapi.domain.auth.AuthenticatedUser
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 // Spring이 이 클래스를 서비스 객체로 생성하고 관리
@@ -83,7 +86,8 @@ class JwtService(
         // 위에서 설정한 내용을 하나의 JWT 문자열로 완성하여 반환
     }
 
-    fun getUserId(token: String): Long {
+    @Transactional(readOnly = true)
+    fun getAuthenticatedUser(token: String): AuthenticatedUser {
         // 받은 JWT를 검증하고 회원 ID를 반환
         // 검증에 실패하면 JwtException 발생
         // 기존 JwtAuthenticationFilter가 이를 받아 401 응답을 보냄
@@ -164,7 +168,20 @@ class JwtService(
         // 새 비밀번호로 다시 로그인하면
         // 현재 DB 버전인 1을 담은 JWT가 새로 발급됨
 
-        return userId
+        // DB에 저장된 현재 역할 조회
+        val roleName = user.role?.name
+            ?: throw JwtException("회원 권한 정보가 없습니다.")
+
+        // 현재 서비스에서 사용하는 역할만 허용
+        if (roleName !in setOf("ADMIN", "MEMBER")) {
+            throw JwtException("지원하지 않는 회원 권한입니다.")
+        }
+
+        // 회원 ID와 역할을 함께 반환
+        return AuthenticatedUser(
+            userId = userId,
+            roleName = roleName
+        )
         // 모든 검증을 통과한 경우에만 회원 ID 반환
         // JwtAuthenticationFilter가 이 ID를 인증 정보에 저장
     }
