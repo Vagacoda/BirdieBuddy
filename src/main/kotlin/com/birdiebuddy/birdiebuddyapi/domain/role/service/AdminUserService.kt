@@ -1,11 +1,13 @@
 package com.birdiebuddy.birdiebuddyapi.domain.role.service
 
+import com.birdiebuddy.birdiebuddyapi.domain.role.BlockDuration
 import com.birdiebuddy.birdiebuddyapi.domain.user.UserEntity
 import com.birdiebuddy.birdiebuddyapi.domain.user.UserRepository
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.server.ResponseStatusException
+import java.time.LocalDateTime
 
 @Service
 @Transactional
@@ -13,26 +15,25 @@ class AdminUserService(
     private val userRepository: UserRepository
 ) {
     // 일반 회원을 영구 차단
+    // 일반 회원을 기간별 또는 영구 차단
     fun blockUser(
         adminId: Long,
-        targetUserId: Long
+        targetUserId: Long,
+        duration: BlockDuration
     ) {
         val user = findBlockableMember(
             adminId = adminId,
             targetUserId = targetUserId
         )
 
-        if (user.status == "BLOCKED") {
-            throw ResponseStatusException(
-                HttpStatus.CONFLICT,
-                "이미 차단된 회원입니다."
-            )
-        }
-
         user.status = "BLOCKED"
-        user.blockedUntil = null
 
-        // 이미 발급된 JWT도 즉시 무효화
+        // 기간 차단이면 만료 시각, 영구 차단이면 null
+        user.blockedUntil = duration.calculateBlockedUntil(
+            LocalDateTime.now()
+        )
+
+        // 이미 로그인한 회원의 기존 JWT도 즉시 무효화
         user.tokenVersion += 1
     }
 
