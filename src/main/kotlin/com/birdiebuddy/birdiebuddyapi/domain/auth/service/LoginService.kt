@@ -5,6 +5,7 @@ import com.birdiebuddy.birdiebuddyapi.domain.user.UserRepository
 import jakarta.transaction.Transactional
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 
 @Service
 @Transactional
@@ -27,7 +28,26 @@ class LoginService (
             throw IllegalArgumentException("이메일 인증이 완룓히지 않았습니다.")
         }
 
-        if (user.deletedAt != null || user.status != "ACTIVE") {
+        if (user.deletedAt != null) {
+            throw IllegalArgumentException("로그인할 수 없는 계정입니다.")
+        }
+
+        if (user.status == "BLOCKED") {
+            val isExpiredTemporaryBlock =
+                user.blockedUntil != null &&
+                        !user.blockedUntil!!.isAfter(LocalDateTime.now())
+
+            if (isExpiredTemporaryBlock) {
+                // 임시 차단 기간 종료: 로그인과 함께 자동 해제
+                user.status = "ACTIVE"
+                user.blockedUntil = null
+            } else {
+                // 영구 차단 또는 아직 기간이 남은 임시 차단
+                throw IllegalArgumentException("차단된 계정입니다.")
+            }
+        }
+
+        if (user.status != "ACTIVE") {
             throw IllegalArgumentException("로그인할 수 없는 계정입니다.")
         }
 

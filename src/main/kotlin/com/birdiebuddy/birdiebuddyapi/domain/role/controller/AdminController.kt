@@ -8,6 +8,10 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import com.birdiebuddy.birdiebuddyapi.domain.comment.service.CommentService
+import com.birdiebuddy.birdiebuddyapi.domain.role.BlockUserRequest
+import com.birdiebuddy.birdiebuddyapi.domain.role.service.AdminUserService
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 
 @RestController
 @RequestMapping("/api/admin")

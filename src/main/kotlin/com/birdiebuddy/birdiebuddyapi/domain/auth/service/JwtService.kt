@@ -12,6 +12,7 @@ import javax.crypto.SecretKey
 // 2026/11/08
 import com.birdiebuddy.birdiebuddyapi.domain.auth.AuthenticatedUser
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 
 @Service
 // Spring이 이 클래스를 서비스 객체로 생성하고 관리
@@ -86,7 +87,7 @@ class JwtService(
         // 위에서 설정한 내용을 하나의 JWT 문자열로 완성하여 반환
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(noRollbackFor = [JwtException::class])
     fun getAuthenticatedUser(token: String): AuthenticatedUser {
         // 받은 JWT를 검증하고 회원 ID를 반환
         // 검증에 실패하면 JwtException 발생
@@ -141,11 +142,30 @@ class JwtService(
         // JWT에서 확인한 회원 ID로 DB 조회
         // 토큰이 정상이어도 해당 회원이 DB에 없으면 인증 거부
 
-        if (
-            user.deletedAt != null ||
-            user.status != "ACTIVE" ||
-            user.emailVerifiedAt == null
-        ) {
+        if (user.deletedAt != null || user.emailVerifiedAt == null) {
+            throw JwtException("이용할 수 없는 계정입니다.")
+        }
+
+        // BLOCKED라면 차단 만료 여부를 먼저 확인
+        if (user.status == "BLOCKED") {
+            val blockedUntil = user.blockedUntil
+
+            val isExpiredTemporaryBlock =
+                blockedUntil != null &&
+                        !blockedUntil.isAfter(LocalDateTime.now())
+
+            if (isExpiredTemporaryBlock) {
+                // 임시 차단 기간이 지났으므로 계정을 다시 활성화
+                user.status = "ACTIVE"
+                user.blockedUntil = null
+            } else {
+                // null이면 영구 차단, 미래 시각이면 아직 임시 차단 중
+                throw JwtException("차단된 계정입니다.")
+            }
+        }
+
+// BLOCKED 외의 비정상 상태도 차단
+        if (user.status != "ACTIVE") {
             throw JwtException("이용할 수 없는 계정입니다.")
         }
         // ||는 OR: 조건 중 하나라도 참이면 차단
