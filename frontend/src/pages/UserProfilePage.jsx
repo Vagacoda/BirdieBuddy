@@ -136,8 +136,8 @@ function UserProfilePage() {
                     <div className="profile-header-row">
                         <div>
                             <p>유저 프로필</p>
-                            <h1>
-                                {profile.nickname}
+                            <div className="profile-name-row">
+                                <h1>{profile.nickname}</h1>
 
                                 {isAdmin && !isMyProfile && (
                                     <AdminBlockControl
@@ -149,7 +149,7 @@ function UserProfilePage() {
                                         }}
                                     />
                                 )}
-                            </h1>
+                            </div>
                         </div>
 
                         {Number(userId) === myId && (

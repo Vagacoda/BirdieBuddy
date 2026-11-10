@@ -745,3 +745,70 @@
   height: auto;
   margin: 12px 0;
 }
+
+.admin-block-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+  flex-wrap: wrap;
+}
+
+.admin-block-control .danger-button {
+  padding: 0.35rem 0.7rem;
+  font-size: 0.9rem;
+}
+
+.admin-block-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid #efb0aa;
+  border-radius: 0.4rem;
+  background: #fff8f7;
+  flex-wrap: wrap;
+}
+
+.admin-block-picker label {
+  font-size: 0.9rem;
+}
+
+.admin-block-picker select {
+  width: auto;
+  min-width: 6.5rem;
+  padding: 0.3rem 0.45rem;
+}
+
+.admin-block-error,
+.admin-block-message {
+  display: inline-block;
+  width: 100%;
+  font-size: 0.9rem;
+}
+
+.admin-block-error {
+  color: #c0392b;
+}
+
+.admin-block-message {
+  color: #247447;
+}
+
+.profile-name-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.profile-name-row h1 {
+  margin: 0;
+}
+
+.profile-name-row .admin-block-control {
+  margin-left: 0;
+  font-size: 1rem;
+  font-weight: 400;
+}
