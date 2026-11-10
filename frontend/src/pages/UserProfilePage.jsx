@@ -1,5 +1,6 @@
 import {useEffect, useState} from 'react'
 import {Link, useParams, useSearchParams} from 'react-router-dom'
+import AdminBlockControl from '../components/AdminBlockControl.jsx'
 import '../App.css'
 
 function UserProfilePage() {
@@ -15,6 +16,7 @@ function UserProfilePage() {
     const [retry, setRetry] = useState(0)
 
     const [myId, setMyId] = useState(null)
+    const [myRole, setMyRole] = useState(null)
 
     useEffect(() => {
         let ignore = false
@@ -30,7 +32,10 @@ function UserProfilePage() {
         })
             .then((response) => (response.ok ? response.json() : null))
             .then((me) => {
-                if (!ignore) setMyId(me?.id ?? null)
+                if (!ignore) {
+                    setMyId(me?.id ?? null)
+                    setMyRole(me?.role ?? null)
+                }
             })
             .catch(() => {
                 if (!ignore) setMyId(null)
@@ -98,6 +103,8 @@ function UserProfilePage() {
     const profile = loading ? null : result.profile
     const articlePage = loading ? null : result.articlePage
     const error = loading ? '' : result.error
+    const isAdmin = myRole === 'ADMIN'
+    const isMyProfile = Number(userId) === myId
 
     function movePage(nextPage) {
         setSearchParams({page: String(nextPage)})
@@ -129,7 +136,20 @@ function UserProfilePage() {
                     <div className="profile-header-row">
                         <div>
                             <p>유저 프로필</p>
-                            <h1>{profile.nickname}</h1>
+                            <h1>
+                                {profile.nickname}
+
+                                {isAdmin && !isMyProfile && (
+                                    <AdminBlockControl
+                                        targetUserId={Number(userId)}
+                                        targetNickname={profile.nickname}
+                                        onUnauthorized={() => {
+                                            setMyId(null)
+                                            setMyRole(null)
+                                        }}
+                                    />
+                                )}
+                            </h1>
                         </div>
 
                         {Number(userId) === myId && (

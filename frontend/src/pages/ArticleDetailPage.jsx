@@ -4,6 +4,7 @@ import CommentSection from '../components/CommentSection.jsx'
 import ArticleVoteSection from '../components/ArticleVoteSection.jsx'
 import ArticleBody from '../components/ArticleBody.jsx'
 import ArticleEditor from '../components/ArticleEditor.jsx'
+import AdminBlockControl from '../components/AdminBlockControl.jsx'
 import DOMPurify from 'dompurify'
 import '../App.css'
 
@@ -464,6 +465,22 @@ function ArticleDetailContent({ articleId }) {
                                     <Link to={`/users/${article.authorId}`}>
                                         {article.authorNickname}
                                     </Link>
+
+                                    {isAdmin && !isOwner && (
+                                        <>
+                                            {' '}
+                                            <AdminBlockControl
+                                                targetUserId={article.authorId}
+                                                targetNickname={article.authorNickname}
+                                                onUnauthorized={() => {
+                                                    setNeedsLogin(true)
+                                                    setMyId(null)
+                                                    setMyRole(null)
+                                                }}
+                                            />
+                                        </>
+                                    )}
+
                                     {' · '}
                                     조회수: {article.viewCount}
                                 </p>
