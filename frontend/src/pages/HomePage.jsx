@@ -170,7 +170,7 @@ function HomePage() {
                 <section className="panel golf-panel">
                     <div className="map-area">
                         <h2>지도</h2>
-                        <GolfMap />
+                        <GolfMap courses={courses} />
                     </div>
 
                     <div className="course-area">
