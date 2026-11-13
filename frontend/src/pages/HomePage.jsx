@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import UserDashboard from '../components/UserDashboard.jsx'
+import GolfMap from '../components/GolfMap.jsx'
 import '../App.css'
 
 function HomePage() {
@@ -10,6 +11,11 @@ function HomePage() {
     // 처음 화면에 들어오면 바로 조회하므로 true로 시작
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
+    // 2026/11/13
+    // 골프장 목록과 요청 상태
+    const [courses, setCourses] = useState([])
+    const [coursesLoading, setCoursesLoading] = useState(true)
+    const [coursesError, setCoursesError] = useState('')
 
     // 홈 화면이 나타나면 게시글 자동 조회
     useEffect(() => {
@@ -42,6 +48,40 @@ function HomePage() {
         loadArticles()
 
         // 화면을 벗어난 뒤에는 조회 결과를 반영하지 않음
+        return () => {
+            ignore = true
+        }
+    }, [])
+
+    useEffect(() => {
+        let ignore = false
+
+        async function loadCourses() {
+            try {
+                const response = await fetch('/api/golf-courses')
+
+                if (!response.ok) {
+                    throw new Error('골프장 목록을 불러오지 못했습니다.')
+                }
+
+                const data = await response.json()
+
+                if (!ignore) {
+                    setCourses(data)
+                }
+            } catch (error) {
+                if (!ignore) {
+                    setCoursesError(error.message)
+                }
+            } finally {
+                if (!ignore) {
+                    setCoursesLoading(false)
+                }
+            }
+        }
+
+        loadCourses()
+
         return () => {
             ignore = true
         }
@@ -130,12 +170,33 @@ function HomePage() {
                 <section className="panel golf-panel">
                     <div className="map-area">
                         <h2>지도</h2>
-                        <p>지도 서비스 준비 중</p>
+                        <GolfMap />
                     </div>
 
                     <div className="course-area">
                         <h2>골프장 목록</h2>
-                        <p>골프장 정보를 준비 중입니다.</p>
+
+                        {coursesLoading && <p>골프장 정보를 불러오는 중입니다.</p>}
+
+                        {coursesError && <p role="alert">{coursesError}</p>}
+
+                        {!coursesLoading && !coursesError && (
+                            <>
+                                <p>총 {courses.length}개</p>
+
+                                <div style={{ maxHeight: '350px', overflowY: 'auto' }}>
+                                    <ul>
+                                        {courses.map((course) => (
+                                            <li key={course.id}>
+                                                <strong>{course.name}</strong>
+                                                <br />
+                                                {course.address}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </>
+                        )}
                     </div>
                 </section>
 
