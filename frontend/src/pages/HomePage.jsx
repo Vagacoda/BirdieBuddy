@@ -4,6 +4,26 @@ import UserDashboard from '../components/UserDashboard.jsx'
 import GolfMap from '../components/GolfMap.jsx'
 import '../App.css'
 
+// 두 좌표 사이의 직선거리를 km 단위로 계산
+function getDistanceKm(lat1, lng1, lat2, lng2) {
+    const toRadians = (degree) => (degree * Math.PI) / 180
+
+    const earthRadiusKm = 6371
+    const latDifference = toRadians(lat2 - lat1)
+    const lngDifference = toRadians(lng2 - lng1)
+
+    const a =
+        Math.sin(latDifference / 2) ** 2 +
+        Math.cos(toRadians(lat1)) *
+        Math.cos(toRadians(lat2)) *
+        Math.sin(lngDifference / 2) ** 2
+
+    return earthRadiusKm * 2 * Math.atan2(
+        Math.sqrt(a),
+        Math.sqrt(1 - a)
+    )
+}
+
 function HomePage() {
     // 화면에 표시할 게시글 목록
     const [articles, setArticles] = useState([])
@@ -16,6 +36,9 @@ function HomePage() {
     const [courses, setCourses] = useState([])
     const [coursesLoading, setCoursesLoading] = useState(true)
     const [coursesError, setCoursesError] = useState('')
+    // 사용자가 허용한 현재 위치
+    const [myLocation, setMyLocation] = useState(null)
+    const [locationMessage, setLocationMessage] = useState('')
 
     // 홈 화면이 나타나면 게시글 자동 조회
     useEffect(() => {
@@ -86,6 +109,54 @@ function HomePage() {
             ignore = true
         }
     }, [])
+
+    function requestLocation() {
+        if (!window.isSecureContext || !navigator.geolocation) {
+            setLocationMessage(
+                '위치 기능은 HTTPS 또는 localhost에서 사용할 수 있습니다.'
+            )
+            return
+        }
+
+        setLocationMessage('현재 위치를 확인하는 중입니다.')
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                setMyLocation({
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude,
+                })
+                setLocationMessage('')
+            },
+            (error) => {
+                if (error.code === 1) {
+                    setLocationMessage('위치 권한이 거부되었습니다.')
+                } else {
+                    setLocationMessage('현재 위치를 확인하지 못했습니다.')
+                }
+            },
+            {
+                timeout: 10000,
+                maximumAge: 60000,
+            }
+        )
+    }
+
+// 위치가 있으면 가까운 순으로 정렬
+    const displayedCourses = myLocation
+        ? courses
+            .map((course) => ({
+                ...course,
+                distanceKm: getDistanceKm(
+                    myLocation.latitude,
+                    myLocation.longitude,
+                    Number(course.latitude),
+                    Number(course.longitude)
+                ),
+            }))
+            .sort((a, b) => a.distanceKm - b.distanceKm)
+            .slice(0, 10)
+        : courses.slice(0, 10)
 
     return (
         <div className="home">
