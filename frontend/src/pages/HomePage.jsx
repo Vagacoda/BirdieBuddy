@@ -241,7 +241,55 @@ function HomePage() {
                 <section className="panel golf-panel">
                     <div className="map-area">
                         <h2>지도</h2>
-                        <GolfMap courses={courses} />
+                        <div className="course-area">
+                            <h2>골프장 목록</h2>
+
+                            <button type="button" onClick={requestLocation}>
+                                내 위치 확인
+                            </button>
+
+                            {locationMessage && <p role="status">{locationMessage}</p>}
+
+                            {coursesLoading && <p>골프장 정보를 불러오는 중입니다.</p>}
+
+                            {coursesError && <p role="alert">{coursesError}</p>}
+
+                            {!coursesLoading && !coursesError && (
+                                <>
+                                    <p>
+                                        {myLocation
+                                            ? '가까운 골프장 10개 · 직선거리 기준'
+                                            : '기본 골프장 목록 10개'}
+                                    </p>
+
+                                    <div className="table-container">
+                                        <table className="article-table">
+                                            <thead>
+                                            <tr>
+                                                <th>이름</th>
+                                                <th>주소</th>
+                                                <th>거리</th>
+                                            </tr>
+                                            </thead>
+
+                                            <tbody>
+                                            {displayedCourses.map((course) => (
+                                                <tr key={course.id}>
+                                                    <td>{course.name}</td>
+                                                    <td>{course.address}</td>
+                                                    <td>
+                                                        {myLocation
+                                                            ? `${course.distanceKm.toFixed(1)} km`
+                                                            : '위치 확인 필요'}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </>
+                            )}
+                        </div>
                     </div>
 
                     <div className="course-area">
