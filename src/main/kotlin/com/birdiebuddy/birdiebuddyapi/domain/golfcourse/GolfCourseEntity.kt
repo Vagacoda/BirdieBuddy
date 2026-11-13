@@ -1,5 +1,6 @@
 package com.birdiebuddy.birdiebuddyapi.domain.golfcourse
 
+import org.springframework.data.jpa.repository.JpaRepository
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
@@ -9,7 +10,7 @@ import jakarta.persistence.Table
 import java.math.BigDecimal
 
 @Entity
-@Table(name = "GolfCourse")
+@Table(name = "`GolfCourse`")
 class GolfCourseEntity(
 
     @Id
@@ -28,3 +29,4 @@ class GolfCourseEntity(
     @Column(nullable = false, precision = 10, scale = 7)
     val longitude: BigDecimal = BigDecimal.ZERO
 )
+interface GolfCourseRepository : JpaRepository<GolfCourseEntity, Long>
