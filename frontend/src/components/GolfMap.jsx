@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 
-function GolfMap({ courses }) {
+function GolfMap({ courses, myLocation }) {
     const mapElement = useRef(null)
     const mapRef = useRef(null)
     const [error, setError] = useState('')
@@ -28,6 +28,20 @@ function GolfMap({ courses }) {
             mapRef.current = null
         }
     }, [])
+
+    // 위치를 허용하면 지도 중심을 현재 위치로 이동
+    useEffect(() => {
+        if (!myLocation || !mapRef.current || !window.naver?.maps) {
+            return
+        }
+
+        mapRef.current.setCenter(
+            new window.naver.maps.LatLng(
+                myLocation.latitude,
+                myLocation.longitude
+            )
+        )
+    }, [myLocation])
 
     // 골프장 목록이 준비되면 마커 생성
     useEffect(() => {

@@ -113,7 +113,7 @@ function HomePage() {
     function requestLocation() {
         if (!window.isSecureContext || !navigator.geolocation) {
             setLocationMessage(
-                '위치 기능은 HTTPS 또는 localhost에서 사용할 수 있습니다.'
+                '현재 위치를 확인할 수 없습니다.'
             )
             return
         }
@@ -155,8 +155,8 @@ function HomePage() {
                 ),
             }))
             .sort((a, b) => a.distanceKm - b.distanceKm)
-            .slice(0, 10)
-        : courses.slice(0, 10)
+            .slice(0, 5)
+        : courses.slice(0, 5)
 
     return (
         <div className="home">
@@ -241,7 +241,10 @@ function HomePage() {
                 <section className="panel golf-panel">
                     <div className="map-area">
                         <h2>지도</h2>
-                        <div className="course-area">
+                        <GolfMap courses={displayedCourses} myLocation={myLocation} />
+                    </div>
+
+                    <div className="course-area">
                             <h2>골프장 목록</h2>
 
                             <button type="button" onClick={requestLocation}>
@@ -256,13 +259,7 @@ function HomePage() {
 
                             {!coursesLoading && !coursesError && (
                                 <>
-                                    <p>
-                                        {myLocation
-                                            ? '가까운 골프장 10개 · 직선거리 기준'
-                                            : '기본 골프장 목록 10개'}
-                                    </p>
-
-                                    <div className="table-container">
+                                    <div className="table-container" style={{ maxHeight: '330px', overflowY: 'auto' }}>
                                         <table className="article-table">
                                             <thead>
                                             <tr>
@@ -280,7 +277,7 @@ function HomePage() {
                                                     <td>
                                                         {myLocation
                                                             ? `${course.distanceKm.toFixed(1)} km`
-                                                            : '위치 확인 필요'}
+                                                            : '—'}
                                                     </td>
                                                 </tr>
                                             ))}
@@ -289,33 +286,6 @@ function HomePage() {
                                     </div>
                                 </>
                             )}
-                        </div>
-                    </div>
-
-                    <div className="course-area">
-                        <h2>골프장 목록</h2>
-
-                        {coursesLoading && <p>골프장 정보를 불러오는 중입니다.</p>}
-
-                        {coursesError && <p role="alert">{coursesError}</p>}
-
-                        {!coursesLoading && !coursesError && (
-                            <>
-                                <p>총 {courses.length}개</p>
-
-                                <div style={{ maxHeight: '350px', overflowY: 'auto' }}>
-                                    <ul>
-                                        {courses.map((course) => (
-                                            <li key={course.id}>
-                                                <strong>{course.name}</strong>
-                                                <br />
-                                                {course.address}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            </>
-                        )}
                     </div>
                 </section>
 
