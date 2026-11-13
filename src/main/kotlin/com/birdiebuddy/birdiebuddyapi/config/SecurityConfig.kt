@@ -106,6 +106,10 @@ class SecurityConfig (
                     HttpMethod.GET,
                     "/uploads/**"
                 ).permitAll()
+                auth.requestMatchers(
+                    HttpMethod.GET,
+                    "/api/golf-courses"
+                ).permitAll()
 
                 auth.requestMatchers(
                     HttpMethod.HEAD,
