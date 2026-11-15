@@ -65,7 +65,9 @@ class NewsCollectionService(
                 // 변환에 실패하면 예외를 발생시켜 완료로 기록하지 않음
                 val publishedAt = ZonedDateTime.parse( // publishedAt는 변환한 기사 시각
                     item.pubDate,
+                    // "pubDate": "Sun, 15 Nov 2026 08:30:00 +0900"
                     DateTimeFormatter.RFC_1123_DATE_TIME
+                    // Sun, 15 Nov 2026 08:30:00 +0900
                 )
                     .withZoneSameInstant(zone) // 서버 시간대로 맞춤
                     .toLocalDateTime() // 날짜와 시각만 꺼냄

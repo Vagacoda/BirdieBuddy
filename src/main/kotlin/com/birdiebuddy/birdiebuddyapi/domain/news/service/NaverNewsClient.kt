@@ -6,6 +6,7 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 import java.time.Duration
+import tools.jackson.databind.ObjectMapper
 
 @Component
 class NaverNewsClient(
@@ -15,7 +16,9 @@ class NaverNewsClient(
     private val clientId: String,
 
     @param:Value("\${naver.news.client-secret}")
-    private val clientSecret: String
+    private val clientSecret: String,
+
+    private val objectMapper: ObjectMapper
 ) {
 
     // 네이버 서버에 연결하거나 응답을 기다리는 시간 제한
@@ -42,7 +45,7 @@ class NaverNewsClient(
             "네이버 뉴스 API 인증키가 설정되지 않았습니다."
         }
 
-        return restClient.get()
+        val responseBody = restClient.get()
             .uri { builder ->
                 builder
                     .path("/search/v1/news")
@@ -56,9 +59,14 @@ class NaverNewsClient(
             .header("X-NCP-APIGW-API-KEY-ID", clientId)
             .header("X-NCP-APIGW-API-KEY", clientSecret)
             .retrieve()
-            .body(NaverNewsResponse::class.java)
+            .body(String::class.java)
             ?: throw IllegalStateException(
                 "네이버 뉴스 API의 응답 본문이 없습니다."
             )
+
+        return objectMapper.readValue(
+            responseBody,
+            NaverNewsResponse::class.java
+        )
     }
 }
