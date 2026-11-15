@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 
-function GolfMap({ courses, myLocation }) {
+function GolfMap({ courses, myLocation, userLocation }) {
     const mapElement = useRef(null)
     const mapRef = useRef(null)
     const [error, setError] = useState('')
@@ -42,6 +42,29 @@ function GolfMap({ courses, myLocation }) {
             )
         )
     }, [myLocation])
+
+    // 사용자가 위치를 허용한 경우에만 현재 위치 마커 표시
+    useEffect(() => {
+        if (!userLocation || !mapRef.current || !window.naver?.maps) {
+            return
+        }
+
+        const marker = new window.naver.maps.Marker({
+            map: mapRef.current,
+            position: new window.naver.maps.LatLng(
+                userLocation.latitude,
+                userLocation.longitude
+            ),
+            title: '내 위치',
+            zIndex: 1000,
+            icon: {
+                content: '<div aria-label="내 위치" style="width:18px;height:18px;background:#2563eb;border:3px solid white;border-radius:50%;box-shadow:0 1px 6px rgba(0,0,0,.4)"></div>',
+                anchor: new window.naver.maps.Point(12, 12),
+            },
+        })
+
+        return () => marker.setMap(null)
+    }, [userLocation])
 
     // 골프장 목록이 준비되면 마커 생성
     useEffect(() => {

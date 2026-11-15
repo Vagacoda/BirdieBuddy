@@ -4,6 +4,9 @@ import UserDashboard from '../components/UserDashboard.jsx'
 import GolfMap from '../components/GolfMap.jsx'
 import '../App.css'
 
+// 위치 권한을 받기 전에는 인하공업전문대학을 기준으로 사용
+const DEFAULT_LOCATION = { latitude: 37.451448, longitude: 126.651542 }
+
 // 두 좌표 사이의 직선거리를 km 단위로 계산
 function getDistanceKm(lat1, lng1, lat2, lng2) {
     const toRadians = (degree) => (degree * Math.PI) / 180
@@ -142,21 +145,20 @@ function HomePage() {
         )
     }
 
-// 위치가 있으면 가까운 순으로 정렬
-    const displayedCourses = myLocation
-        ? courses
+    // 사용자 위치가 없으면 학교를 기준으로 가까운 순으로 정렬
+    const referenceLocation = myLocation ?? DEFAULT_LOCATION
+    const displayedCourses = courses
             .map((course) => ({
                 ...course,
                 distanceKm: getDistanceKm(
-                    myLocation.latitude,
-                    myLocation.longitude,
+                    referenceLocation.latitude,
+                    referenceLocation.longitude,
                     Number(course.latitude),
                     Number(course.longitude)
                 ),
             }))
             .sort((a, b) => a.distanceKm - b.distanceKm)
             .slice(0, 5)
-        : courses.slice(0, 5)
 
     return (
         <div className="home">
@@ -241,7 +243,7 @@ function HomePage() {
                 <section className="panel golf-panel">
                     <div className="map-area">
                         <h2>지도</h2>
-                        <GolfMap courses={displayedCourses} myLocation={myLocation} />
+                        <GolfMap courses={displayedCourses} myLocation={referenceLocation} userLocation={myLocation} />
                     </div>
 
                     <div className="course-area">
@@ -252,6 +254,8 @@ function HomePage() {
                             </button>
 
                             {locationMessage && <p role="status">{locationMessage}</p>}
+
+                            <p>기준: {myLocation ? '현재 위치' : '인하공업전문대학'} · 직선거리</p>
 
                             {coursesLoading && <p>골프장 정보를 불러오는 중입니다.</p>}
 
@@ -275,9 +279,7 @@ function HomePage() {
                                                     <td>{course.name}</td>
                                                     <td>{course.address}</td>
                                                     <td>
-                                                        {myLocation
-                                                            ? `${course.distanceKm.toFixed(1)} km`
-                                                            : '—'}
+                                                        {`${course.distanceKm.toFixed(1)} km`}
                                                     </td>
                                                 </tr>
                                             ))}
