@@ -43,7 +43,7 @@ class NewsCollectionService(
             return 0
         }
 
-        val collectedNews = mutableListOf<NewsEntity>()
+        val collectedNews = mutableListOf<NewsEntity>() // 항목을 추가하거나 제거할 수 있는 목록
         var start = 1
 
         while (true) {
@@ -59,16 +59,16 @@ class NewsCollectionService(
 
             var reachedOlderNews = false
 
-            for (item in items) {
+            for (item in items) { // item은 기사
 
                 // API의 시각 문자열을 서버 시간대의 날짜·시간으로 변환
                 // 변환에 실패하면 예외를 발생시켜 완료로 기록하지 않음
-                val publishedAt = ZonedDateTime.parse(
+                val publishedAt = ZonedDateTime.parse( // publishedAt는 변환한 기사 시각
                     item.pubDate,
                     DateTimeFormatter.RFC_1123_DATE_TIME
                 )
-                    .withZoneSameInstant(zone)
-                    .toLocalDateTime()
+                    .withZoneSameInstant(zone) // 서버 시간대로 맞춤
+                    .toLocalDateTime() // 날짜와 시각만 꺼냄
 
                 // 오늘 오전 9시 이후 기사는 다음 수집분이므로 제외
                 if (!publishedAt.isBefore(periodEnd)) {
@@ -116,9 +116,9 @@ class NewsCollectionService(
 
     // 네이버 기사 DTO를 DB 저장용 엔터티로 변환
     private fun toEntity(
-        item: NaverNewsItem,
-        publishedAt: LocalDateTime,
-        fetchedAt: LocalDateTime
+        item: NaverNewsItem, // 네이버에서 받은 기사 한 건
+        publishedAt: LocalDateTime, // 변환한 기사 시각
+        fetchedAt: LocalDateTime // 이번 수집을 시작한 서버 시각
     ): NewsEntity {
 
         val originalUrl = item.originallink.trim()
