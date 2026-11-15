@@ -252,7 +252,7 @@ function HomePage() {
                 <section className="panel golf-panel">
                     <div className="map-area">
                         <h2>지도</h2>
-                        <GolfMap courses={displayedCourses} myLocation={referenceLocation} userLocation={myLocation} />
+                        <GolfMap courses={courses} myLocation={referenceLocation} userLocation={myLocation} />
                     </div>
 
                     <div className="course-area">
