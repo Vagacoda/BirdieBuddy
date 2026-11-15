@@ -4,6 +4,15 @@ import UserDashboard from '../components/UserDashboard.jsx'
 import GolfMap from '../components/GolfMap.jsx'
 import '../App.css'
 
+// 골프장 좌표를 중심으로 네이버 지도 열기
+function getNaverMapUrl(course) {
+    const radius = 6378137
+    const latitude = Number(course.latitude) * Math.PI / 180
+    const x = radius * Number(course.longitude) * Math.PI / 180
+    const y = radius * Math.log(Math.tan(Math.PI / 4 + latitude / 2))
+    return `https://map.naver.com/p/entry/address/${x},${y},${encodeURIComponent(course.address || course.name)}?c=16,0,0,0,dh`
+}
+
 // 위치 권한을 받기 전에는 인하공업전문대학을 기준으로 사용
 const DEFAULT_LOCATION = { latitude: 37.451448, longitude: 126.651542 }
 
@@ -249,7 +258,7 @@ function HomePage() {
                     <div className="course-area">
                             <h2>골프장 목록</h2>
 
-                            <button type="button" onClick={requestLocation}>
+                            <button type="button" className="location-button" onClick={requestLocation}>
                                 내 위치 확인
                             </button>
 
@@ -276,7 +285,11 @@ function HomePage() {
                                             <tbody>
                                             {displayedCourses.map((course) => (
                                                 <tr key={course.id}>
-                                                    <td>{course.name}</td>
+                                                    <td>
+                                                        <a href={getNaverMapUrl(course)} target="_blank" rel="noopener noreferrer">
+                                                            {course.name}
+                                                        </a>
+                                                    </td>
                                                     <td>{course.address}</td>
                                                     <td>
                                                         {`${course.distanceKm.toFixed(1)} km`}

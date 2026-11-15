@@ -1,5 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
 
+// 골프장 좌표를 중심으로 네이버 지도 열기
+function getNaverMapUrl(course) {
+    const radius = 6378137
+    const latitude = Number(course.latitude) * Math.PI / 180
+    const x = radius * Number(course.longitude) * Math.PI / 180
+    const y = radius * Math.log(Math.tan(Math.PI / 4 + latitude / 2))
+    return `https://map.naver.com/p/entry/address/${x},${y},${encodeURIComponent(course.address || course.name)}?c=16,0,0,0,dh`
+}
+
 function GolfMap({ courses, myLocation, userLocation }) {
     const mapElement = useRef(null)
     const mapRef = useRef(null)
@@ -43,28 +52,29 @@ function GolfMap({ courses, myLocation, userLocation }) {
         )
     }, [myLocation])
 
-    // 사용자가 위치를 허용한 경우에만 현재 위치 마커 표시
+    // 현재 위치가 없으면 학교를 기준 위치로 표시
     useEffect(() => {
-        if (!userLocation || !mapRef.current || !window.naver?.maps) {
+        if (!myLocation || !mapRef.current || !window.naver?.maps) {
             return
         }
 
+        const markerLabel = userLocation ? '내 위치' : '기준 위치: 인하공업전문대학'
         const marker = new window.naver.maps.Marker({
             map: mapRef.current,
             position: new window.naver.maps.LatLng(
-                userLocation.latitude,
-                userLocation.longitude
+                myLocation.latitude,
+                myLocation.longitude
             ),
-            title: '내 위치',
+            title: markerLabel,
             zIndex: 1000,
             icon: {
-                content: '<div aria-label="내 위치" style="width:18px;height:18px;background:#2563eb;border:3px solid white;border-radius:50%;box-shadow:0 1px 6px rgba(0,0,0,.4)"></div>',
+                content: `<div role="img" aria-label="${markerLabel}" style="width:18px;height:18px;background:#dc2626;border:3px solid white;border-radius:50%;box-shadow:0 1px 6px rgba(0,0,0,.4)"></div>`,
                 anchor: new window.naver.maps.Point(12, 12),
             },
         })
 
         return () => marker.setMap(null)
-    }, [userLocation])
+    }, [myLocation, userLocation])
 
     // 골프장 목록이 준비되면 마커 생성
     useEffect(() => {
@@ -93,16 +103,14 @@ function GolfMap({ courses, myLocation, userLocation }) {
             markers.push(marker)
 
             function showInfo() {
-                // 골프장 이름을 클릭하면 네이버 지도 검색으로 이동
+                // 골프장 이름을 클릭하면 해당 좌표의 네이버 지도로 이동
                 const content = document.createElement('div')
                 content.style.padding = '10px'
                 content.style.whiteSpace = 'nowrap'
 
                 const link = document.createElement('a')
                 link.textContent = course.name
-                link.href =
-                    'https://map.naver.com/p/search/' +
-                    encodeURIComponent(`${course.name} ${course.address}`)
+                link.href = getNaverMapUrl(course)
                 link.target = '_blank'
                 link.rel = 'noopener noreferrer'
 

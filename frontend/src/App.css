@@ -62,6 +62,33 @@
   font-weight: bold;
 }
 
+/* 내 위치 확인 버튼 */
+.location-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 14px;
+  border: 1px solid #216a45;
+  border-radius: 6px;
+  background: #fff;
+  color: #216a45;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.location-button:hover {
+  background: #216a45;
+  color: #fff;
+}
+
+.location-button:focus-visible {
+  outline: 3px solid #8dbba1;
+  outline-offset: 2px;
+}
+
 /* 두 번째 줄: 지도와 골프장 목록 */
 .golf-panel {
   display: grid;
