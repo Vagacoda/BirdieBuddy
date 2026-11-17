@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import UserDashboard from '../components/UserDashboard.jsx'
 import GolfMap from '../components/GolfMap.jsx'
+import GolfNews from '../components/GolfNews.jsx'
 import '../App.css'
 
 // 골프장 좌표를 중심으로 네이버 지도 열기
@@ -306,10 +307,7 @@ function HomePage() {
 
                 {/* 세 번째 줄: 뉴스 + 유튜브 */}
                 <div className="home-bottom">
-                    <section className="panel news-panel">
-                        <h2>뉴스</h2>
-                        <p>골프 뉴스를 준비 중입니다.</p>
-                    </section>
+                    <GolfNews />
 
                     <section className="panel youtube-panel">
                         <h2>유튜브</h2>

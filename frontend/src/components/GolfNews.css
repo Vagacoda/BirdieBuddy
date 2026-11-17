@@ -1,0 +1,130 @@
+.news-source {
+    margin-bottom: 12px;
+    font-size: 12px;
+    color: #66756b;
+}
+
+.news-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.news-list li + li {
+    border-top: 1px solid #e6ece7;
+}
+
+.news-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 0;
+    color: #24332b;
+}
+
+.news-card:hover {
+    text-decoration: none;
+}
+
+.news-card:hover h3 {
+    color: #246743;
+    text-decoration: underline;
+}
+
+.news-card img {
+    width: 96px;
+    height: 64px;
+    flex-shrink: 0;
+    border-radius: 6px;
+    object-fit: cover;
+    background: #edf3ed;
+}
+
+.news-card-content {
+    min-width: 0;
+}
+
+.news-card h3 {
+    margin: 0 0 6px;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.news-card time {
+    font-size: 12px;
+    color: #66756b;
+}
+
+.news-summary {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    margin: 0 0 6px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #66756b;
+}
+
+.news-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.news-pagination button {
+    padding: 8px 16px;
+    border: 1px solid #246743;
+    border-radius: 6px;
+    background: white;
+    color: #246743;
+}
+
+.news-pagination button:hover:not(:disabled) {
+    background: #edf3ed;
+}
+
+.news-pagination button:disabled {
+    opacity: 0.4;
+}
+.news-search {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.news-search label {
+    font-size: 14px;
+}
+
+.news-search input {
+    flex: 1;
+    min-width: 160px;
+    padding: 9px 12px;
+    border: 1px solid #c6d8ca;
+    border-radius: 6px;
+    background: white;
+}
+
+.news-search button {
+    padding: 9px 14px;
+    border: 1px solid #246743;
+    border-radius: 6px;
+    background: white;
+    color: #246743;
+}
+
+.news-search button[type="submit"] {
+    background: #246743;
+    color: white;
+}
+
+.news-search button:disabled {
+    opacity: 0.5;
+}

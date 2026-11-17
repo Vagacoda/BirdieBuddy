@@ -6,6 +6,7 @@ import ArticleCreatePage from './pages/ArticleCreatePage.jsx'
 import UserProfilePage from './pages/UserProfilePage.jsx'
 import SignupPage from './pages/SignupPage.jsx'
 import AccountEditPage from './pages/AccountEditPage.jsx'
+import NewsPage from './pages/NewsPage.jsx'
 
 function App() {
     return (
@@ -37,6 +38,8 @@ function App() {
                         </main>
                     }
                 />
+
+                <Route path="/news" element={<NewsPage />} />
 
                 <Route path="/signup" element={<SignupPage/>}/>
 

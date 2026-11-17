@@ -8,6 +8,8 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDateTime
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 
 @Entity
 @Table(name = "`News`")
@@ -56,4 +58,10 @@ interface NewsRepository : JpaRepository<NewsEntity, Long> {
 
     // 같은 원문 주소의 기사가 이미 저장돼 있는지 확인
     fun existsByUrlHash(urlHash: String): Boolean
+
+    // 제목에 검색어가 포함된 기사만 페이지 단위로 조회
+    fun findByTitleContainingIgnoreCase(
+        keyword: String,
+        pageable: Pageable
+    ): Page<NewsEntity>
 }
