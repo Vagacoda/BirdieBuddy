@@ -28,25 +28,33 @@ class YoutubeUrlParser {
             "올바른 유튜브 링크를 입력해 주세요."
         }
 
+        // host = "www.youtube.com"
+        // path = "/watch"
         val host = uri.host?.lowercase()
         val path = uri.path.orEmpty()
 
         val videoId = when (host) {
 
             // https://youtu.be/영상ID
+            // 짧은 공유 링크 처리
             "youtu.be", "www.youtu.be" -> {
                 path.removePrefix("/").removeSuffix("/")
             }
 
+            // 일반 유튜브 링크 처리
             "youtube.com",
             "www.youtube.com",
             "m.youtube.com",
             "music.youtube.com" -> {
 
+                // 경로가 /watch인지 확인
                 when {
                     // https://www.youtube.com/watch?v=영상ID
                     path == "/watch" -> {
                         uri.rawQuery.orEmpty()
+                            // 유튜브 링크에서 ? 뒤는 이름=값 형태의 옵션들이고, 여러 옵션을 &로 구분하기 때문
+                            // "v=abcdefghijk"
+                            // "t=30s"
                             .split("&")
                             .firstOrNull {
                                 it.substringBefore("=") == "v"
