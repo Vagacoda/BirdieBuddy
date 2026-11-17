@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestClientException
 import org.springframework.web.server.ResponseStatusException
+import com.birdiebuddy.birdiebuddyapi.domain.youtube.YoutubePageResponse
 
 @Service
 class YoutubeService(
@@ -48,28 +49,47 @@ class YoutubeService(
         )
     }
 
-    // 홈 화면에 최근 등록한 영상 최대 10개 표시
     @Transactional(readOnly = true)
-    fun getVideos(): List<YoutubeResponse> {
+    // 홈은 size=5, 전체 목록은 size=20으로 조회
+    fun getVideos(
+        page: Int,
+        size: Int
+    ): YoutubePageResponse {
+
+        require(page >= 0) {
+            "페이지 번호는 0 이상이어야 합니다."
+        }
+
+        require(size in 1..20) {
+            "페이지당 영상 수는 1부터 20 사이여야 합니다."
+        }
 
         val pageable = PageRequest.of(
-            0,
-            10,
+            page,
+            size,
             Sort.by(
                 Sort.Order.desc("createdAt"),
                 Sort.Order.desc("id")
             )
         )
 
-        return youtubeRepository.findAll(pageable)
-            .content
-            .map { video ->
-                YoutubeResponse(
-                    id = requireNotNull(video.id),
-                    videoId = video.videoId,
-                    title = video.title,
-                    channelName = video.channelName
-                )
-            }
+        val result = youtubeRepository.findAll(pageable)
+
+        val videos = result.content.map { video ->
+            YoutubeResponse(
+                id = requireNotNull(video.id),
+                videoId = video.videoId,
+                title = video.title,
+                channelName = video.channelName
+            )
+        }
+
+        return YoutubePageResponse(
+            videos = videos,
+            page = result.number,
+            size = result.size,
+            totalElements = result.totalElements,
+            totalPages = result.totalPages
+        )
     }
 }
