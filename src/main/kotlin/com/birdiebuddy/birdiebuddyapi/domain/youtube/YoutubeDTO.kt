@@ -21,3 +21,11 @@ data class YoutubeResponse(
     val title: String,
     val channelName: String
 )
+
+// 유튜브 oEmbed 응답을 받는 DTO
+data class YoutubeOEmbedResponse(
+    val title: String = "",
+
+    // 유튜브 JSON의 필드 이름에 맞춤: 채널 이름
+    val author_name: String = ""
+)
