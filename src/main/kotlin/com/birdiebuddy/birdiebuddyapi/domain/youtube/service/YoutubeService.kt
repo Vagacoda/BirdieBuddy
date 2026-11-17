@@ -12,6 +12,7 @@ import org.springframework.web.client.RestClientException
 import org.springframework.web.server.ResponseStatusException
 import com.birdiebuddy.birdiebuddyapi.domain.youtube.YoutubePageResponse
 
+
 @Service
 class YoutubeService(
     private val youtubeUrlParser: YoutubeUrlParser,
@@ -91,5 +92,18 @@ class YoutubeService(
             totalElements = result.totalElements,
             totalPages = result.totalPages
         )
+    }
+
+    @Transactional
+    fun deleteVideo(id: Long) {
+        val video = youtubeRepository.findById(id)
+            .orElseThrow {
+                ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "등록된 영상을 찾을 수 없습니다."
+                )
+            }
+
+        youtubeRepository.delete(video)
     }
 }

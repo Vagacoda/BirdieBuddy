@@ -1,7 +1,11 @@
 import { useState } from 'react'
 import './YoutubeVideoList.css'
 
-function YoutubeVideoList({ videos }) {
+function YoutubeVideoList({
+    videos,
+    onDelete,
+    deletingId = null,
+}) {
     // 현재 펼쳐진 영상 ID. null이면 모두 닫힌 상태
     const [activeVideoId, setActiveVideoId] = useState(null)
 
@@ -21,7 +25,9 @@ function YoutubeVideoList({ videos }) {
                 const isOpen = activeVideoId === video.videoId
 
                 return (
+
                     <li key={video.id}>
+
                         {/* 열린 영상만 플레이어 생성 */}
                         {isOpen && (
                             <div className="youtube-player">
@@ -34,6 +40,7 @@ function YoutubeVideoList({ videos }) {
                                 />
                             </div>
                         )}
+
 
                         {/* 썸네일 또는 제목을 누르면 열기·닫기 */}
                         <button
@@ -66,6 +73,16 @@ function YoutubeVideoList({ videos }) {
                                 )}
                             </span>
                         </button>
+                        {onDelete && (
+                            <button
+                                type="button"
+                                className="youtube-delete-button"
+                                disabled={deletingId !== null}
+                                onClick={() => onDelete(video)}
+                            >
+                                {deletingId === video.id ? '삭제 중...' : '삭제'}
+                            </button>
+                        )}
 
                         {/* 외부 재생이 제한된 영상도 유튜브에서 확인 가능 */}
                         {isOpen && (

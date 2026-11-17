@@ -29,13 +29,19 @@ class NewsSaveService(
         }
 
         val newNews = news
-            // 이번에 받은 목록 안에서 같은 기사 제거
+            // 발행 시각 최신순으로 정렬
+            .sortedByDescending { it.publishedAt }
+
+            // 이번 목록 안의 중복 제거
             .distinctBy { it.urlHash }
 
-            // 기존 DB에 이미 저장된 기사 제외
+            // DB에 이미 저장된 기사 제외
             .filterNot {
                 newsRepository.existsByUrlHash(it.urlHash)
             }
+
+            // 새 기사는 하루 최대 30개만 저장
+            .take(30)
 
         // 새 기사들을 저장
         newsRepository.saveAll(newNews)

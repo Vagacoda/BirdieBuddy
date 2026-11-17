@@ -80,3 +80,19 @@
     margin-top: 10px;
     font-size: 12px;
 }
+
+.youtube-delete-button {
+    display: block;
+    margin: 10px 0 0 auto;
+    padding: 6px 12px;
+    border: 1px solid #b33a3a;
+    border-radius: 6px;
+    background: #fff;
+    color: #b33a3a;
+    cursor: pointer;
+}
+
+.youtube-delete-button:disabled {
+    opacity: 0.5;
+    cursor: wait;
+}

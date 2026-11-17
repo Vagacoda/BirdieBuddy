@@ -7,6 +7,8 @@ import UserProfilePage from './pages/UserProfilePage.jsx'
 import SignupPage from './pages/SignupPage.jsx'
 import AccountEditPage from './pages/AccountEditPage.jsx'
 import NewsPage from './pages/NewsPage.jsx'
+import YoutubePage from './pages/YoutubePage.jsx'
+import YoutubeCreatePage from './pages/YoutubeCreatePage.jsx'
 
 function App() {
     return (
@@ -44,6 +46,11 @@ function App() {
                 <Route path="/signup" element={<SignupPage/>}/>
 
                 <Route path="/users/me/edit" element={<AccountEditPage/>}/>
+
+                <Route path="/youtube" element={<YoutubePage />} />
+
+                <Route path="/youtube/new" element={<YoutubeCreatePage />} />
+
             </Routes>
         </BrowserRouter>
     )

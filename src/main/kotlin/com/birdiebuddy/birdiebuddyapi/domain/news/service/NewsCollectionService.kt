@@ -100,16 +100,15 @@ class NewsCollectionService(
                 break
             }
 
-            // 조회 범위를 1~1000번째 결과로 제한
-            // 목표 시간대 전체를 확인하지 못하면 저장·완료 처리하지 않음
-            check(nextStart <= 901) {
-                "뉴스 검색 한도 안에서 수집 범위를 모두 확인하지 못했습니다."
+            // 조회 한도에 도달하면 지금까지 모은 기사로 처리
+            if (nextStart > 901) {
+                break
             }
 
             start = nextStart
         }
 
-        // 조회를 끝까지 성공한 경우에만 기사와 완료 기록 저장
+        // 조회 가능한 범위에서 모은 기사를 저장하고 오늘 처리 완료 기록
         return newsSaveService.saveCollectedNews(
             collectionDate = collectionDate,
             news = collectedNews

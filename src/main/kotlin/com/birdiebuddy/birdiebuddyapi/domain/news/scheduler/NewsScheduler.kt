@@ -46,10 +46,10 @@ class NewsScheduler(
                 exception.targetType
             )
         } catch (exception: Exception) {
-            // 그 외 오류 기록
             logger.error(
-                "뉴스 수집 실패: {}",
-                exception.javaClass.simpleName
+                "뉴스 수집 실패: 종류={}, 원인={}",
+                exception.javaClass.simpleName,
+                exception.message
             )
         }
     }

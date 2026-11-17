@@ -839,3 +839,31 @@
   font-size: 1rem;
   font-weight: 400;
 }
+
+.youtube-create-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 720px;
+  margin-top: 24px;
+}
+
+.youtube-create-form input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #c6d8ca;
+  border-radius: 6px;
+}
+
+.youtube-create-form button {
+  align-self: flex-start;
+  padding: 10px 20px;
+  border: 0;
+  border-radius: 6px;
+  background: #246743;
+  color: white;
+}
+
+.youtube-create-form button:disabled {
+  opacity: 0.5;
+}
