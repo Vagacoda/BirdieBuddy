@@ -29,3 +29,12 @@ data class YoutubeOEmbedResponse(
     // 유튜브 JSON의 필드 이름에 맞춤: 채널 이름
     val author_name: String = ""
 )
+
+// 영상 목록과 페이지 정보
+data class YoutubePageResponse(
+    val videos: List<YoutubeResponse>,
+    val page: Int,
+    val size: Int,
+    val totalElements: Long,
+    val totalPages: Int
+)
