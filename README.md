@@ -275,3 +275,7 @@ S/W프로젝트 기획 및 개발 계획
 
 https://app.notion.com/p/2026-2-S-W-3d1bf5a0b328802398d5fc2b4f51ae5c
 http://13.209.180.54
+또는
+http://ec2-13-209-180-54.ap-northeast-2.compute.amazonaws.com
+12주차 발표
+https://water-basketball-749.notion.site/S-W-12-41bbf5a0b3288083a9adc296236199b9?source=copy_link
