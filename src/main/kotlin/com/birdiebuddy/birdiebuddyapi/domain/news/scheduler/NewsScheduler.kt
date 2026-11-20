@@ -11,6 +11,7 @@ import org.springframework.web.client.UnknownContentTypeException
 
 @Component
 @ConditionalOnProperty(
+    // WAS에서 실행 시 옵션을 주면 뉴스수집을 끌 수 있음
     name = ["news.scheduler.enabled"],
     havingValue = "true",
     matchIfMissing = true
